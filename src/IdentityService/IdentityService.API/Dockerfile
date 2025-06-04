@@ -2,10 +2,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 COPY src/IdentityService/IdentityService.API/*.csproj ./src/IdentityService/IdentityService.API/
-COPY src/IdentityService/IdentityService.Application/*.csproj ./src/IdentityService/IdentityService.Application/
-COPY src/IdentityService/IdentityService.Infrastructure/*.csproj ./src/IdentityService/IdentityService.Infrastructure/
-COPY src/IdentityService/IdentityService.Domain/*.csproj ./src/IdentityService/IdentityService.Domain/
-COPY src/IdentityService/IdentityService.Persistence/*.csproj ./src/IdentityService/IdentityService.Persistence/
+COPY src/IdentityService/IdentityService.BLL/*.csproj ./src/IdentityService/IdentityService.BLL/
+COPY src/IdentityService/IdentityService.DAL/*.csproj ./src/IdentityService/IdentityService.DAL/
 
 RUN dotnet restore src/IdentityService/IdentityService.API/IdentityService.API.csproj
 

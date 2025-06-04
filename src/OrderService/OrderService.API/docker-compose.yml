@@ -1,0 +1,14 @@
+services:
+  basket-service:
+    build:
+      context: ../../..
+      dockerfile: src/OrderService/OrderService.API/Dockerfile
+    ports:
+      - "5003:80"
+    networks:
+      - ecommerce-net
+
+networks:
+  ecommerce-net:
+    external: true
+    name: ecommerce-network
