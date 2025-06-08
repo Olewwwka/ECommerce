@@ -10,10 +10,16 @@ namespace IdentityService.API.Extentions
     {
         public static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
-            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
+            services.AddScoped<IAuthService, AuthService>();
+
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+            services.AddScoped<IAccessTokenService, AccessTokenSerivce>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+            
         }
     }
 }

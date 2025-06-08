@@ -3,6 +3,7 @@ using IdentityService.BLL.Options;
 using IdentityService.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,12 +31,19 @@ services.AddDbContext<IdentityServiceDbContext>(options =>
     options.UseNpgsql(configuration.GetConnectionString(nameof(IdentityServiceDbContext)));
 });
 
+services.AddSingleton<IConnectionMultiplexer>(cm =>
+    ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")));
+
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 
 var app = builder.Build();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityService");
+    c.RoutePrefix = "";
+});
 
 app.MapControllers();
 

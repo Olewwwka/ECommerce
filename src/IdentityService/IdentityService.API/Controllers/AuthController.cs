@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogService.API.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiController]
+    [Route("/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -23,9 +24,11 @@ namespace CatalogService.API.Controllers
         {
             var registerDTO = _mapper.Map<RegisterRequest>(regiserUser);
 
-            var accessToken = await _authService.RegisterAsync(registerDTO, cancellationToken);
+            var authResponse = await _authService.RegisterAsync(registerDTO, cancellationToken);
 
-            return Ok(accessToken);
+            SetCookie(authResponse);
+
+            return Ok(authResponse);
         }
 
         [HttpPost("login")]
@@ -33,12 +36,39 @@ namespace CatalogService.API.Controllers
         {
             var loginDTO = _mapper.Map<LoginRequest>(loginModel);
 
-            var accessToken = await _authService.LoginAsync(loginDTO, cancellationToken);
+            var authResponse = await _authService.LoginAsync(loginDTO, cancellationToken);
 
-            return Ok(accessToken);
+            SetCookie(authResponse);
+
+            return Ok(authResponse);
         }
 
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(CancellationToken cancellationToken)
+        {
 
+            var accessToken = Request.Cookies["access-token"];
 
+            var refreshToken = Request.Cookies["refresh-token"];
+
+            var authResponce = await _authService.RefreshAsync(accessToken, refreshToken, cancellationToken);
+
+            SetCookie(authResponce);
+
+            return Ok(authResponce);
+        }
+
+        private void SetCookie(AuthResponse authResponse)
+        {
+            var cookieOptions = new CookieOptions()
+            {
+                HttpOnly = true,
+                Secure = true,
+                Expires = authResponse.RefreshToken.ExpiresAt
+            };
+
+            HttpContext.Response.Cookies.Append("access-token", authResponse.AccessToken, cookieOptions);
+            HttpContext.Response.Cookies.Append("refresh-token", authResponse.RefreshToken.Token, cookieOptions);
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace IdentityService.DAL.Abstractions
     {
         Task<UserEntity> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
         Task CreateUserAsync(UserEntity user, CancellationToken cancellationToken);
+        Task<UserEntity> GetUserByIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }

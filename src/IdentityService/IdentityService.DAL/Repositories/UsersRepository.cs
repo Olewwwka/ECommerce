@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using IdentityService.DAL.Abstractions;
 using IdentityService.DAL.Data;
 using IdentityService.DAL.Entities;
@@ -18,20 +14,23 @@ namespace IdentityService.DAL.Repositories
             _context = dbContext;
         }
 
+        public async Task<UserEntity> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Users.SingleOrDefaultAsync(user => user.Id == id, cancellationToken);
+        }
+
         public async Task CreateUserAsync(UserEntity user, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            await _context.Users.AddAsync(user, cancellationToken);
 
-            await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
 
         public async Task<UserEntity> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
         {
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var userEntity = await _context.Users.AsNoTracking().SingleOrDefaultAsync(user => user.Email == email);
+            var userEntity = await _context.Users
+                .AsNoTracking()
+                .SingleOrDefaultAsync(user => user.Email == email, cancellationToken);
 
             return userEntity;
         }

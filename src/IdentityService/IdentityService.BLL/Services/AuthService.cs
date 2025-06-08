@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using IdentityService.BLL.Abstractions;
 using IdentityService.BLL.DTO;
 using IdentityService.DAL.Abstractions;
 using IdentityService.DAL.Entities;
-using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService.BLL.Services
 {
@@ -17,14 +11,20 @@ namespace IdentityService.BLL.Services
         private readonly IUsersRepository _usersRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IMapper _mapper;
-        private readonly ITokenService _tokenService;
+        private readonly IAccessTokenService _tokenService;
+        private readonly IRefreshTokenService _refreshTokenService;
 
-        public AuthService(IUsersRepository usersRepository, IPasswordHasher passwordHasher, IMapper mapper, ITokenService tokenService)
+        public AuthService(IUsersRepository usersRepository, 
+            IPasswordHasher passwordHasher, 
+            IMapper mapper, 
+            IAccessTokenService tokenService, 
+            IRefreshTokenService refreshTokenService)
         {
             _usersRepository = usersRepository;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
             _tokenService = tokenService;
+            _refreshTokenService = refreshTokenService;
         }
 
         public async Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
@@ -43,9 +43,13 @@ namespace IdentityService.BLL.Services
                 throw new Exception();
             }
 
-            var accessToken = _tokenService.GenerateAccessToken(existingUser);
+            var accessToken = _tokenService.GenerateAccessToken(existingUser.Id, existingUser.Name, existingUser.Email, existingUser.Role);
 
-            return new AuthResponse() { AccessToken = accessToken };
+            var refreshToken = _refreshTokenService.GenerateRefreshToken(existingUser.Id);
+
+            await _refreshTokenService.SaveRefreshTokenAsync(refreshToken);
+
+            return new AuthResponse() { AccessToken = accessToken, RefreshToken = refreshToken };
         }
 
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
@@ -59,18 +63,47 @@ namespace IdentityService.BLL.Services
 
             var userEntity = _mapper.Map<UserEntity>(request);
 
-            try
-            {
-                await _usersRepository.CreateUserAsync(userEntity, cancellationToken);
-            }
-            catch (Exception ex)
+            await _usersRepository.CreateUserAsync(userEntity, cancellationToken);
+
+            var accessToken = _tokenService.GenerateAccessToken(userEntity.Id, userEntity.Name, userEntity.Email, userEntity.Role);
+
+            var refreshToken = _refreshTokenService.GenerateRefreshToken(userEntity.Id);
+
+            await _refreshTokenService.SaveRefreshTokenAsync(refreshToken);
+
+            return new AuthResponse() { AccessToken = accessToken, RefreshToken = refreshToken };
+        }
+
+        public async Task<AuthResponse> RefreshAsync(string accessToken, string refreshToken, CancellationToken cancellationToken)
+        {
+            var existingRefreshToken = await _refreshTokenService.GetRefreshTokenAsync(refreshToken);
+
+            if(existingRefreshToken == null)
             {
                 throw new Exception();
             }
 
-            var accessToken = _tokenService.GenerateAccessToken(userEntity);
+            if(existingRefreshToken.IsExpired)
+            {
+                throw new Exception();
+            }
 
-            return new AuthResponse() {AccessToken = accessToken};
+            var existingUser = await _usersRepository.GetUserByIdAsync(existingRefreshToken.UserId, cancellationToken);
+
+            if(existingUser == null)
+            {
+                throw new Exception();
+            }
+
+            var newAccessToken = _tokenService.GenerateAccessToken(existingUser.Id, existingUser.Name, existingUser.Email, existingUser.Role);
+
+            var newRefreshToken = _refreshTokenService.GenerateRefreshToken(existingUser.Id);
+
+            await _refreshTokenService.DeleteRefreshTokenAsync(refreshToken);
+
+            await _refreshTokenService.SaveRefreshTokenAsync(newRefreshToken);
+
+            return new AuthResponse() { AccessToken = accessToken, RefreshToken=newRefreshToken };
         }
     }
 }

@@ -9,21 +9,22 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService.BLL.Services
 {
-    public class TokenService : ITokenService
+    public class AccessTokenSerivce : IAccessTokenService
     {
         private readonly JwtOptions _jwtOptions;
-        public TokenService(IOptions<JwtOptions> options)
+        public AccessTokenSerivce(IOptions<JwtOptions> options)
         {
             _jwtOptions = options.Value;
         }
 
-        public string GenerateAccessToken(UserEntity user)
+        public string GenerateAccessToken(Guid id, string name, string email, string role)
         {
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, user.Name),
-                new(ClaimTypes.Email, user.Email),
-                new(ClaimTypes.Role, user.Role)
+                new(ClaimTypes.NameIdentifier, id.ToString()),
+                new(ClaimTypes.Name, name),
+                new(ClaimTypes.Email, email),
+                new(ClaimTypes.Role, role)
             };
 
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));

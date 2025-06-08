@@ -7,8 +7,8 @@ using IdentityService.DAL.Entities;
 
 namespace IdentityService.BLL.Abstractions
 {
-    public interface ITokenService
+    public interface IAccessTokenService
     {
-        string GenerateAccessToken(UserEntity entity);
+        string GenerateAccessToken(Guid id, string name, string email, string role);
     }
 }
