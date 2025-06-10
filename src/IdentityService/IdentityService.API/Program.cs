@@ -1,4 +1,5 @@
 using IdentityService.API.Extentions;
+using IdentityService.API.Middleware;
 using IdentityService.BLL.Options;
 using IdentityService.DAL.Data;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +37,15 @@ services.AddSingleton<IConnectionMultiplexer>(cm =>
 
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 
+services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "JwtFromCookie";
+    options.DefaultChallengeScheme = "JwtFromCookie";
+});
+
 var app = builder.Build();
+
+app.AddMiddlewares();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -45,6 +54,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "";
 });
 
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IdentityService.BLL.Abstractions;
 using IdentityService.BLL.DTO;
+using IdentityService.BLL.Exceptions;
 using IdentityService.DAL.Abstractions;
 using IdentityService.DAL.Entities;
 
@@ -33,14 +34,14 @@ namespace IdentityService.BLL.Services
 
             if (existingUser == null)
             {
-                throw new Exception();
+                throw new UserNotFoundException("User not found!");
             }
 
             var isPasswordCorrect = _passwordHasher.VerifyPassword(request.Password, existingUser.PasswordHash);
 
             if(!isPasswordCorrect)
             {
-                throw new Exception();
+                throw new IncorrectPasswordException("Incorrect password!!");
             }
 
             var accessToken = _tokenService.GenerateAccessToken(existingUser.Id, existingUser.Name, existingUser.Email, existingUser.Role);
@@ -58,7 +59,7 @@ namespace IdentityService.BLL.Services
 
             if(existingUser != null)
             {
-                throw new Exception(); 
+                throw new UserAlreadyExistsException($"User with email {request.Email} already exists!");
             }
 
             var userEntity = _mapper.Map<UserEntity>(request);
@@ -80,19 +81,19 @@ namespace IdentityService.BLL.Services
 
             if(existingRefreshToken == null)
             {
-                throw new Exception();
+                throw new RefreshTokenNotFoundException("Refresh token not found!");
             }
 
             if(existingRefreshToken.IsExpired)
             {
-                throw new Exception();
+                throw new RefreshTokenExpiredException("Refresh token expired!");
             }
 
             var existingUser = await _usersRepository.GetUserByIdAsync(existingRefreshToken.UserId, cancellationToken);
 
             if(existingUser == null)
             {
-                throw new Exception();
+                throw new UserNotFoundException("User not found!");
             }
 
             var newAccessToken = _tokenService.GenerateAccessToken(existingUser.Id, existingUser.Name, existingUser.Email, existingUser.Role);

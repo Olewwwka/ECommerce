@@ -6,7 +6,7 @@ using IdentityService.DAL.Repositories;
 
 namespace IdentityService.API.Extentions
 {
-    public static class DependencyInjection
+    public static class DependencyInjectionExtention
     {
         public static void AddServices(this IServiceCollection services)
         {
