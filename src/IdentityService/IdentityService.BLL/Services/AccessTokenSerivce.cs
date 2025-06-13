@@ -17,15 +17,16 @@ namespace IdentityService.BLL.Services
             _jwtOptions = options.Value;
         }
 
-        public string GenerateAccessToken(Guid id, string name, string email, string role)
+        public string GenerateAccessToken(Guid id, string name, string email, IEnumerable<string> Roles)
         {
             var claims = new List<Claim>
             {
                 new(ClaimTypes.NameIdentifier, id.ToString()),
                 new(ClaimTypes.Name, name),
                 new(ClaimTypes.Email, email),
-                new(ClaimTypes.Role, role)
             };
+
+            claims.AddRange(Roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
 

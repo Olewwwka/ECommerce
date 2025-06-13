@@ -1,17 +1,27 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using IdentityService.API.Extentions;
-using IdentityService.API.Middleware;
-using IdentityService.BLL.Options;
+using IdentityService.BLL.Validation;
 using IdentityService.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
-
+using Microsoft.AspNetCore.Authentication;
+using IdentityService.API.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
 services.AddControllers();
+
+services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+services.AddFluentValidationAutoValidation();
+
+services.AddAuthentication("CustomAuth")
+    .AddScheme<AuthenticationSchemeOptions, CustomAuthHandler>("CustomAuth", options => { });
+
+services.AddAuthorization();
 
 services.AddEndpointsApiExplorer();
 
@@ -35,17 +45,13 @@ services.AddDbContext<IdentityServiceDbContext>(options =>
 services.AddSingleton<IConnectionMultiplexer>(cm =>
     ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")));
 
-services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
-
-services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = "JwtFromCookie";
-    options.DefaultChallengeScheme = "JwtFromCookie";
-});
+builder.ConfigureOptions();
 
 var app = builder.Build();
 
 app.AddMiddlewares();
+
+await DatabaseInitializer.InitializeRolesAsync(app.Services);
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

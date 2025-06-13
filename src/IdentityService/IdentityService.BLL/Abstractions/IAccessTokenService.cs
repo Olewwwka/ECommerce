@@ -10,7 +10,7 @@ namespace IdentityService.BLL.Abstractions
 {
     public interface IAccessTokenService
     {
-        string GenerateAccessToken(Guid id, string name, string email, string role);
+        string GenerateAccessToken(Guid id, string name, string email, IEnumerable<string> roles);
         TokenValidationResult ValidateAccessToken(string accessToken);
     }
 }

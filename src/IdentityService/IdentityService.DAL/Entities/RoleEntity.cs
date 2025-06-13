@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IdentityService.DAL.Entities
+﻿namespace IdentityService.DAL.Entities
 {
     public class RoleEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public ICollection<UserRoleEntity> UserRoles { get; set; }= new List<UserRoleEntity>();
     }
 }

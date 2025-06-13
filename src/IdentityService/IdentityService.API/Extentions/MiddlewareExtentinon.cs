@@ -4,10 +4,10 @@ namespace IdentityService.API.Extentions
 {
     public static class MiddlewareExtentinon
     {
-        public static void AddMiddlewares(this IApplicationBuilder builder)
+        public static void AddMiddlewares(this IApplicationBuilder app)
         {
-            builder.UseMiddleware<JwtTokenMiddleware>();
-            builder.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseMiddleware<JwtTokenMiddleware>();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
         }
     }
 }
