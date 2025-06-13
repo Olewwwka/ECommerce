@@ -1,7 +1,10 @@
-﻿using AutoMapper;
-using CatalogService.API.Models;
+﻿using System.Security.Claims;
+using AutoMapper;
+using IdentityService.API.Filters;
 using IdentityService.BLL.Abstractions;
 using IdentityService.BLL.DTO;
+using IdentityService.DAL.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogService.API.Controllers
@@ -11,32 +14,27 @@ namespace CatalogService.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IMapper _mapper;
+        private readonly IPasswordResetService _passwordResetService;
 
-        public AuthController(IAuthService authService, IMapper mapper)
+        public AuthController(IAuthService authService, IPasswordResetService passwordResetService)
         {
             _authService = authService;
-            _mapper = mapper;
+            _passwordResetService = passwordResetService;
         }
-
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterModel regiserUser, CancellationToken cancellationToken)
+        public async Task<IActionResult> Register([FromBody]RegisterRequest regiserRequest, CancellationToken cancellationToken)
         {
-            var registerDTO = _mapper.Map<RegisterRequest>(regiserUser);
-
-            var authResponse = await _authService.RegisterAsync(registerDTO, cancellationToken);
+            var authResponse = await _authService.RegisterAsync(regiserRequest, cancellationToken);
 
             SetCookie(authResponse);
 
-            return Ok(authResponse);
+            return Ok();
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginModel loginModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> Login([FromBody]LoginRequest loginRequest, CancellationToken cancellationToken)
         {
-            var loginDTO = _mapper.Map<LoginRequest>(loginModel);
-
-            var authResponse = await _authService.LoginAsync(loginDTO, cancellationToken);
+            var authResponse = await _authService.LoginAsync(loginRequest, cancellationToken);
 
             SetCookie(authResponse);
 
@@ -56,6 +54,43 @@ namespace CatalogService.API.Controllers
             SetCookie(authResponce);
 
             return Ok(authResponce);
+        }
+
+        [HttpPost("forgot-password")]////////////////////////////
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken cancellationToken)
+        {
+            await _passwordResetService.SendResetEmailMessageAsync(request.Email, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPost("reset-password")]////////////////////////////
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken cancellationToken)
+        {
+            await _passwordResetService.ResetPasswordAsync(request.Email, request.Token, request.Password, cancellationToken);
+
+            return Ok();
+        }
+
+
+        [HttpGet]
+        [Role(nameof(UserRoles.User))]
+        public IActionResult GetCurrentUser()
+        {
+            var user = HttpContext.User;
+
+            var userId = user.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userName = user.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Name)?.Value;
+            var email = user.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value;
+            var role = user.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role)?.Value;
+
+            return Ok(new
+            {
+                Id = userId,
+                Name = userName,
+                Email = email,
+                Role = role
+            });
         }
 
         private void SetCookie(AuthResponse authResponse)

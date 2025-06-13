@@ -6,12 +6,14 @@ using IdentityService.DAL.Repositories;
 
 namespace IdentityService.API.Extentions
 {
-    public static class DependencyInjection
+    public static class DependencyInjectionExtention
     {
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IResetTokenRepository, ResetTokenRepository>();
+            services.AddScoped<IRolesRepository, RolesRepository>();
 
             services.AddScoped<IAuthService, AuthService>();
 
@@ -19,7 +21,10 @@ namespace IdentityService.API.Extentions
 
             services.AddScoped<IAccessTokenService, AccessTokenSerivce>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
-            
+            services.AddScoped<IPasswordResetService, PasswordResetService>();
+
+            services.AddScoped<IEmailService, EmailService>();
+
         }
     }
 }

@@ -7,8 +7,8 @@ using IdentityService.DAL.Entities;
 
 namespace IdentityService.DAL.Abstractions
 {
-    public interface IUsersRepository : IRepositoryBase<UserEntity>
+    public interface IRolesRepository : IRepositoryBase<RoleEntity>
     {
-        Task<UserEntity> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<RoleEntity> GetRoleByNameAsync(string name, CancellationToken cancellationToken);
     }
 }
