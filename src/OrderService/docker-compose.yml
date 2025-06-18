@@ -1,8 +1,8 @@
 services:
   basket-service:
     build:
-      context: ../../..
-      dockerfile: src/OrderService/OrderService.API/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "5003:80"
     networks:
