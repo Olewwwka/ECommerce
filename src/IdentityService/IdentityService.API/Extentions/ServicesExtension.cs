@@ -1,5 +1,7 @@
 ﻿using IdentityService.BLL.Abstractions;
 using IdentityService.BLL.Services;
+using IdentityService.DAL.Abstractions.Services;
+using IdentityService.DAL.Data;
 
 namespace IdentityService.API.Extentions
 {
@@ -13,6 +15,7 @@ namespace IdentityService.API.Extentions
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<IPasswordResetService, PasswordResetService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
         }
     }
 }

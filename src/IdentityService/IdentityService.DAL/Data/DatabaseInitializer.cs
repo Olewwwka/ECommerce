@@ -1,13 +1,14 @@
-﻿using IdentityService.DAL.Constants;
+﻿using IdentityService.DAL.Abstractions.Services;
+using IdentityService.DAL.Constants;
 using IdentityService.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityService.DAL.Data
 {
-    public static class DatabaseInitializer
+    public class DatabaseInitializer : IDatabaseInitializer
     {
-        public static async Task InitializeRolesAsync(IServiceProvider serviceProvider)
+        public async Task InitializeRolesAsync(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<IdentityServiceDbContext>();
