@@ -20,11 +20,9 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterModel regiserUser, CancellationToken cancellationToken)
+        public async Task<IActionResult> Register(RegisterRequest request, CancellationToken cancellationToken)
         {
-            var registerDTO = _mapper.Map<RegisterRequest>(regiserUser);
-
-            var authResponse = await _authService.RegisterAsync(registerDTO, cancellationToken);
+            var authResponse = await _authService.RegisterAsync(request, cancellationToken);
 
             SetCookie(authResponse);
 
@@ -32,11 +30,9 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginModel loginModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> Login(LoginRequest request, CancellationToken cancellationToken)
         {
-            var loginDTO = _mapper.Map<LoginRequest>(loginModel);
-
-            var authResponse = await _authService.LoginAsync(loginDTO, cancellationToken);
+            var authResponse = await _authService.LoginAsync(request, cancellationToken);
 
             SetCookie(authResponse);
 
