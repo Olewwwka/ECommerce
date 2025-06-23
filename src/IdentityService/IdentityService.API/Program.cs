@@ -45,7 +45,7 @@ var app = builder.Build();
 
 app.AddMiddlewares();
 
-await DatabaseInitializer.InitializeRolesAsync(app.Services);
+app.SeedDatabase();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
