@@ -2,7 +2,7 @@
 
 namespace IdentityService.API.Extentions
 {
-    public static class MiddlewareExtentinon
+    public static class MiddlewareExtension
     {
         public static void AddMiddlewares(this IApplicationBuilder app)
         {

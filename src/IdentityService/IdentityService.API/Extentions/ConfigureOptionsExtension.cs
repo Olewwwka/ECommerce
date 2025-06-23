@@ -4,7 +4,7 @@ using System.Net;
 
 namespace IdentityService.API.Extentions
 {
-    public static class ConfigureOptionsExtention
+    public static class ConfigureOptionsExtension
     {
         public static void ConfigureOptions(this WebApplicationBuilder builder)
         {

@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 
 namespace IdentityService.API.Extentions
 {
-    public static class DatabaseExtention
+    public static class DatabaseExtension
     {
         public static void AddDatabases(this WebApplicationBuilder builder)
         {
