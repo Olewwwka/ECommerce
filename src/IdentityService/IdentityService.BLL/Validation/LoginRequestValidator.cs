@@ -9,7 +9,7 @@ namespace IdentityService.BLL.Validation
         public LoginRequestValidator()
         {
             RuleFor(r => r.Email)
-                .NotEmpty().WithMessage(ValidationRules.EmailNotEmptyMessage)////////
+                .NotEmpty().WithMessage(ValidationRules.EmailNotEmptyMessage)
                 .EmailAddress().WithMessage(ValidationRules.EmailErrorMessage);
 
             RuleFor(r => r.Password)

@@ -56,7 +56,7 @@ namespace CatalogService.API.Controllers
             return Ok(authResponce);
         }
 
-        [HttpPost("forgot-password")]////////////////////////////
+        [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken cancellationToken)
         {
             await _passwordResetService.SendResetEmailMessageAsync(request.Email, cancellationToken);
@@ -64,7 +64,7 @@ namespace CatalogService.API.Controllers
             return Ok();
         }
 
-        [HttpPost("reset-password")]////////////////////////////
+        [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken cancellationToken)
         {
             await _passwordResetService.ResetPasswordAsync(request.Email, request.Token, request.Password, cancellationToken);
