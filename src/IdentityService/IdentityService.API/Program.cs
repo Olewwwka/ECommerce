@@ -37,13 +37,7 @@ services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 services.AddServices();
 
-services.AddDbContext<IdentityServiceDbContext>(options =>
-{
-    options.UseNpgsql(configuration.GetConnectionString(nameof(IdentityServiceDbContext)));
-});
-
-services.AddSingleton<IConnectionMultiplexer>(cm =>
-    ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")));
+builder.AddDatabases();
 
 builder.ConfigureOptions();
 
