@@ -2,9 +2,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 COPY BasketService.API/*.csproj ./BasketService.API/
-COPY BasketService.Application/*.csproj ./BasketService.Application/
-COPY BasketService.Infrastructure/*.csproj ./BasketService.Infrastructure/
-COPY BasketService.Domain/*.csproj ./BasketService.Domain/
+COPY BasketService.BLL/*.csproj ./BasketService.BLL/
+COPY BasketService.DAL/*.csproj ./BasketService.DAL/
 
 RUN dotnet restore BasketService.API/BasketService.API.csproj
 
