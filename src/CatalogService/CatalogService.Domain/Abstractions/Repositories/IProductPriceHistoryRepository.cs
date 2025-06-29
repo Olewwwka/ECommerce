@@ -2,7 +2,7 @@
 
 namespace CatalogService.Domain.Abstractions.Repositories
 {
-    public interface ICategoryRepository : IRepositoryBase<Category>
+    public interface IProductPriceHistoryRepository : IRepositoryBase<ProductPriceHistory>
     {
     }
 }
