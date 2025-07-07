@@ -8,6 +8,13 @@
 
   <ItemGroup>
        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+       <PackageReference Include="StackExchange.Redis" Version="2.8.41" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BasketService.Application\BasketService.Application.csproj" />
+    <ProjectReference Include="..\BasketService.Domain\BasketService.Domain.csproj" />
+    <ProjectReference Include="..\BasketService.Infrastructure\BasketService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
