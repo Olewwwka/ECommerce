@@ -1,31 +1,21 @@
+using OrderService.API.Extentions;
+using OrderService.Domain.Abstractions.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var services = builder.Services;
+var configurations = builder.Configuration;
+
+builder.ConfigureOptions();
+builder.AddDb();
+
+services.AddRepositories();
+services.AddServices();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+var initializer = app.Services.GetRequiredService<IDbInitializer>();
+await initializer.InitializeDbAsync();
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
