@@ -1,7 +1,8 @@
-﻿using CatalogService.Domain.Constants;
+﻿using CatalogService.Application.UseCases.Commands.Categories;
+using CatalogService.Domain.Constants;
 using FluentValidation;
 
-namespace CatalogService.Application.Features.Categories.Commands.Delete
+namespace CatalogService.Application.Validators.Categories
 {
     public class DeleteCategoryCommandValidator : AbstractValidator<DeleteCategoryCommand>
     {

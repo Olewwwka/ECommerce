@@ -2,7 +2,7 @@
 using CatalogService.Domain.Entities;
 using MediatR;
 
-namespace CatalogService.Application.Features.Categories.Queries.GetAll
+namespace CatalogService.Application.UseCases.Queries.Categories
 {
     public record GetPagedCategoriesQuery : IRequest<PagedItems<CategoryWithAttributesDto>>
     {

@@ -1,8 +1,9 @@
-﻿using CatalogService.Domain.Abstractions.Repositories;
+﻿using CatalogService.Application.UseCases.Commands.Categories;
+using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Exceptions;
 using MediatR;
 
-namespace CatalogService.Application.Features.Categories.Commands.Delete
+namespace CatalogService.Application.UseCases.CommandHandlers.Categories
 {
     public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, bool>
     {

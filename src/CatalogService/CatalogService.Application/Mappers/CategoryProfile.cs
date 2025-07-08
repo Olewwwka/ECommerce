@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTO.Categories;
-using CatalogService.Application.Features.Categories.Commands.Create;
+using CatalogService.Application.UseCases.Commands.Categories;
 using CatalogService.Domain.Entities;
 
 namespace CatalogService.Application.Mappers

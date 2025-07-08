@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTO.Categories;
+using CatalogService.Application.UseCases.Queries.Categories;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Entities;
 using MediatR;
 
-namespace CatalogService.Application.Features.Categories.Queries.GetAll
+namespace CatalogService.Application.UseCases.QueryHandlers.Categories
 {
     public class GetPagedCategoriesQueryHandler : IRequestHandler<GetPagedCategoriesQuery, PagedItems<CategoryWithAttributesDto>>
     {

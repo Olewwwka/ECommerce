@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using CatalogService.Application.UseCases.Commands.Categories;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Entities;
 using MediatR;
 
-namespace CatalogService.Application.Features.Categories.Commands.Create
+namespace CatalogService.Application.UseCases.CommandHandlers.Categories
 {
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, string>
     {

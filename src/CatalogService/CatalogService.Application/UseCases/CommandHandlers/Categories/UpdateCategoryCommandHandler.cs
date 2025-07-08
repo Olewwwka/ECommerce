@@ -1,9 +1,10 @@
 ﻿using CatalogService.Application.DTO;
+using CatalogService.Application.UseCases.Commands.Categories;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Exceptions;
 using MediatR;
 
-namespace CatalogService.Application.Features.Categories.Commands.Update
+namespace CatalogService.Application.UseCases.CommandHandlers.Categories
 {
     public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, Guid>
     {
