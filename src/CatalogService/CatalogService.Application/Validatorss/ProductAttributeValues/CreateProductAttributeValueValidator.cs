@@ -1,7 +1,8 @@
-﻿using CatalogService.Domain.Constants;
+﻿using CatalogService.Application.UseCases.Commands.ProductAttributeValues;
+using CatalogService.Domain.Constants;
 using FluentValidation;
 
-namespace CatalogService.Application.Features.ProductAttributesValues.Commands.Create
+namespace CatalogService.Application.Validatorss.ProductAttributeValues
 {
     public class CreateProductAttributeValueValidator : AbstractValidator<CreateProductAttributeValueCommand>
     {

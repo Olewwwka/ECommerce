@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CatalogService.Application.UseCases.Commands.ProductAttributeValues;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
@@ -7,7 +8,7 @@ using CatalogService.Domain.Specifications.Custom;
 using CatalogService.Domain.Specifications.Infrastructure;
 using MediatR;
 
-namespace CatalogService.Application.Features.ProductAttributesValues.Commands.Create
+namespace CatalogService.Application.UseCases.CommandHandlers.ProductAttributeValues
 {
     public class CreateProductAttributeValueHandler : IRequestHandler<CreateProductAttributeValueCommand, string>
     {
@@ -35,40 +36,32 @@ namespace CatalogService.Application.Features.ProductAttributesValues.Commands.C
             var existingProduct = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken);
 
             if (existingProduct is null)
-            {
                 throw new NotFoundException($"Product with id {request.ProductId} not found");
-            }
 
             var attribute = await _productAttributeRepository.GetByIdAsync(request.ProductAttributeId, cancellationToken);
 
             if (attribute is null)
-            {
                 throw new NotFoundException($"Attribute with id {request.ProductAttributeId} not found");
-            }
 
             var productHasValueSpec = new AttributeValueByProductIdSpecification(request.ProductId, request.ProductAttributeId);
-
             var existingProductAttributeValue = await _productAttributeValueRepository.GetOneBySpecAsync(productHasValueSpec, cancellationToken);
 
-            if(existingProductAttributeValue is not null)
-            {
+            if (existingProductAttributeValue is not null)
                 throw new AlreadyExistsException($"Product with id {request.ProductId} already has value to attribute {request.ProductAttributeId}");
-            }
 
             var categoryHasAttribute = new CategoryHasAttributeSpecification(request.ProductAttributeId);
-
             var categoryWithAttribute = await _categoryRepository.GetOneBySpecAsync(categoryHasAttribute, cancellationToken);
 
-            if(categoryWithAttribute is null)
-            {
-                throw new CategoryMismatchException($"Wrong attribute");
-            }
+            if (categoryWithAttribute is null)
+                throw new CategoryMismatchException("Wrong attribute");
 
             var valueExistsSpec = new ValueAlreadyExistsSpecification(request.Value, request.ProductAttributeId);
-
             var existingValue = await _productAttributeValueRepository.GetOneBySpecAsync(valueExistsSpec, cancellationToken);
 
-            if(existingValue is not null)
+            if (existingValue is not null)
+                throw new AlreadyExistsException($"Value '{request.Value}' for attribute {request.ProductAttributeId} already exists");
+
+            if (existingValue is not null)
             {
                 var reusedAttributeValue = new ProductAttributeValue
                 {

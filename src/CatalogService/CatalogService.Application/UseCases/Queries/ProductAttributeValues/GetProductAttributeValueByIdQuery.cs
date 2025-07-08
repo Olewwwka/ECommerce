@@ -1,7 +1,7 @@
 ﻿using CatalogService.Application.DTO.ProductAttributeValues;
 using MediatR;
 
-namespace CatalogService.Application.Features.ProductAttributesValues.Queries.GetById
+namespace CatalogService.Application.UseCases.Queries.ProductAttributeValues
 {
     public record GetProductAttributeValueByIdQuery(Guid ProductId, Guid ProductAttributeId) : IRequest<ProductAttributeValueDto>
     {
