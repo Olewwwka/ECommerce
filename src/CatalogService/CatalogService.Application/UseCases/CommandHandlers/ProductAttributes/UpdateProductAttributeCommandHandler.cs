@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTO;
+using CatalogService.Application.UseCases.Commands.ProductAttributes;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Exceptions;
 using MediatR;
 
-namespace CatalogService.Application.Features.ProductAttributes.Commands.Update
+namespace CatalogService.Application.UseCases.CommandHandlers.ProductAttributes
 {
     public class UpdateProductAttributeCommandHandler : IRequestHandler<UpdateProductAttributeCommand, Guid>
     {

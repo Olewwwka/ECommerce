@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTO.ProductAttributes;
-using CatalogService.Application.Features.ProductAttributes.Comands.Create;
-using CatalogService.Application.Features.ProductAttributes.Commands.Update;
 using CatalogService.Application.Features.ProductAttributesValues.Commands.Create;
+using CatalogService.Application.UseCases.Commands.ProductAttributes;
 using CatalogService.Domain.Entities;
 
 namespace CatalogService.Application.Mappers

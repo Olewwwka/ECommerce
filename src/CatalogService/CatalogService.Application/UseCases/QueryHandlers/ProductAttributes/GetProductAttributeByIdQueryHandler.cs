@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTO.ProductAttributes;
+using CatalogService.Application.UseCases.Queries.ProductAttributes;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Exceptions;
 using MediatR;
 
-namespace CatalogService.Application.Features.ProductAttributes.Queries.GetById
+namespace CatalogService.Application.UseCases.QueryHandlers.ProductAttributes
 {
     public class GetProductAttributeByIdQueryHandler : IRequestHandler<GetProductAttributeByIdQuery, ProductAttributeDto>
     {

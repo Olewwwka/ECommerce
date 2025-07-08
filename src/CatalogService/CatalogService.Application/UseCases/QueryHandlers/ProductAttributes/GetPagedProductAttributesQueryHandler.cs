@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTO.ProductAttributes;
+using CatalogService.Application.UseCases.Queries.ProductAttributes;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
 using MediatR;
 
-namespace CatalogService.Application.Features.ProductAttributes.Queries.GetAll
+namespace CatalogService.Application.UseCases.QueryHandlers.ProductAttributes
 {
     public class GetPagedProductAttributesQueryHandler : IRequestHandler<GetPagedProductAttributesQuery, PagedItems<ProductAttributeDto>>
     {
