@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTO.Brands;
+using CatalogService.Application.UseCases.Queries.Brands;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Entities;
 using MediatR;
 
-namespace CatalogService.Application.Features.Brands.Queries.GetAll
+namespace CatalogService.Application.UseCases.QueryHandlers.Brands
 {
     public class GetAllBrandsQueryHandler : IRequestHandler<GetAllBrandsQuery, PagedItems<BrandDto>>
     {

@@ -1,7 +1,8 @@
-﻿using CatalogService.Domain.Constants;
+﻿using CatalogService.Application.UseCases.Commands.Brands;
+using CatalogService.Domain.Constants;
 using FluentValidation;
 
-namespace CatalogService.Application.Features.Brands.Commands.Update
+namespace CatalogService.Application.Validators.Brands
 {
     public class UpdateBrandCommandValidator : AbstractValidator<UpdateBrandCommand>
     {

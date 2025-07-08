@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using CatalogService.Application.UseCases.Commands.Brands;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Abstractions.Services;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Enums;
 using MediatR;
 
-namespace CatalogService.Application.Features.Brands.Commands.Create
+namespace CatalogService.Application.UseCases.CommandHandlers.Brands
 {
     public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, string>
     {

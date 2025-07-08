@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CatalogService.Application.UseCases.Commands.Brands;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Abstractions.Services;
 using CatalogService.Domain.Entities;
@@ -6,7 +7,7 @@ using CatalogService.Domain.Enums;
 using CatalogService.Domain.Exceptions;
 using MediatR;
 
-namespace CatalogService.Application.Features.Brands.Commands.Update
+namespace CatalogService.Application.UseCases.CommandHandlers.Brands
 {
     public class UpdateBrandCommandHandler : IRequestHandler<UpdateBrandCommand, Guid>
     {

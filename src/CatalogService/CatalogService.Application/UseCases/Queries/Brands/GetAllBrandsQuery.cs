@@ -2,7 +2,7 @@
 using CatalogService.Domain.Entities;
 using MediatR;
 
-namespace CatalogService.Application.Features.Brands.Queries.GetAll
+namespace CatalogService.Application.UseCases.Queries.Brands
 {
     public record GetAllBrandsQuery : IRequest<PagedItems<BrandDto>>
     {

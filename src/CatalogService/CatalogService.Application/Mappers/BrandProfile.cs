@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTO.Brands;
-using CatalogService.Application.Features.Brands.Commands.Create;
+using CatalogService.Application.UseCases.Commands.Brands;
 using CatalogService.Domain.Entities;
 
 namespace CatalogService.Application.Mappers

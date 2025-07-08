@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace CatalogService.Application.Features.Brands.Commands.Create
+namespace CatalogService.Application.UseCases.Commands.Brands
 {
     public record CreateBrandCommand : IRequest<string>
     {
