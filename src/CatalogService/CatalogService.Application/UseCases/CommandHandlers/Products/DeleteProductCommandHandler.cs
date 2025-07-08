@@ -1,8 +1,9 @@
-﻿using CatalogService.Domain.Abstractions.Repositories;
+﻿using CatalogService.Application.UseCases.Commands.Products;
+using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Exceptions;
 using MediatR;
 
-namespace CatalogService.Application.Features.Products.Commands.Delete
+namespace CatalogService.Application.UseCases.CommandHandlers.Products
 {
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Guid>
     {

@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using CatalogService.Application.UseCases.Commands.Products;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
 using MediatR;
 
-namespace CatalogService.Application.Features.Products.Commands.Create
+namespace CatalogService.Application.UseCases.CommandHandlers.Products
 {
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, string>
     {

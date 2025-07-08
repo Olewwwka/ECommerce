@@ -1,7 +1,8 @@
-﻿using CatalogService.Domain.Constants;
+﻿using CatalogService.Application.UseCases.Commands.Products;
+using CatalogService.Domain.Constants;
 using FluentValidation;
 
-namespace CatalogService.Application.Features.Products.Commands.Delete
+namespace CatalogService.Application.Validators.Products
 {
     public class DeleteProductCommandValidator : AbstractValidator<DeleteProductCommand>
     {

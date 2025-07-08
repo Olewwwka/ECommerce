@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace CatalogService.Application.Features.Products.Commands.Delete
+namespace CatalogService.Application.UseCases.Commands.Products
 {
     public record DeleteProductCommand(Guid Id) : IRequest<Guid> { }
 }

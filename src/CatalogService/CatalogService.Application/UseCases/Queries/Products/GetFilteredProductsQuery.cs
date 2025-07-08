@@ -3,7 +3,7 @@ using CatalogService.Application.DTO.Product;
 using CatalogService.Domain.Entities;
 using MediatR;
 
-namespace CatalogService.Application.Features.Products.Queries.GetFiltered
+namespace CatalogService.Application.UseCases.Queries.Products
 {
     public record GetFilteredProductsQuery(GetPagedItemsDto options, ProductFilterDto filter) : IRequest<PagedItems<ProductDto>> { }
 }

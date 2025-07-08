@@ -1,7 +1,7 @@
 ﻿using CatalogService.Application.DTO.Product;
 using MediatR;
 
-namespace CatalogService.Application.Features.Products.Queries.GetById
+namespace CatalogService.Application.UseCases.Queries.Products
 {
     public record GetProductByIdQuery (Guid Id) : IRequest<ProductDto> { }
 }

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTO.Product;
+using CatalogService.Application.UseCases.Queries.Products;
 using CatalogService.Domain.Abstractions.Repositories;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Specifications.Custom;
 using MediatR;
 
-namespace CatalogService.Application.Features.Products.Queries.GetFiltered
+namespace CatalogService.Application.UseCases.QueryHandlers.Products
 {
     public class GetFilteredProductsQueryHandler : IRequestHandler<GetFilteredProductsQuery, PagedItems<ProductDto>>
     {
