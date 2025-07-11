@@ -1,6 +1,6 @@
-﻿namespace BasketService.Domain.Entities
+﻿namespace BasketService.Application.DTO
 {
-    public class BasketItem
+    public class BasketItemDto
     {
         public Guid ProductId { get; set; }
         public string ProductName { get; set; }

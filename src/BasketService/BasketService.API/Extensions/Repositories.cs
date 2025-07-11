@@ -1,7 +1,7 @@
 ﻿using BasketService.Domain.Abstractions;
 using BasketService.Infrastructure.Repositories;
 
-namespace BasketService.API.Extentions
+namespace BasketService.API.Extensions
 {
     public static class Repositories
     {
