@@ -1,7 +1,7 @@
 ﻿using OrderService.Domain.Abstractions;
 using OrderService.Infrastructure.Repositories;
 
-namespace OrderService.API.Extentions
+namespace OrderService.API.Extensions
 {
     public static class RepositoriesDI
     {

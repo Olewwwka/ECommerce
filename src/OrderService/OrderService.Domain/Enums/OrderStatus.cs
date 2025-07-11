@@ -3,7 +3,8 @@
     public enum OrderStatus
     {
         Created = 1,
-        Completedd = 2,
-        Rejected = 3
+        Completed = 2,
+        Rejected = 3,
+        Pending = 4
     }
 }
