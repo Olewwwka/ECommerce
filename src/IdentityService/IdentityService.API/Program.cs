@@ -1,41 +1,65 @@
-var builder = WebApplication.CreateBuilder(args);
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using IdentityService.Api.Extentions;
+using IdentityService.API.Extentions;
+using IdentityService.BLL.Options;
+using IdentityService.BLL.Validation;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
+
+builder.AddDatabases();
+
+builder.ConfigureOptions();
+
+services.AddApiAutorization(configuration,
+    builder.Services.BuildServiceProvider().GetRequiredService<IOptions<JwtOptions>>());
+
+
+services.AddControllers();
+
+services.AddRepositories();
+
+services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+services.AddFluentValidationAutoValidation();
+
+
+
+services.AddEndpointsApiExplorer();
+
+services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "IdentityService"
+    });
+});
+
+services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+services.AddServices();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.UseHttpsRedirection();
+app.AddMiddlewares();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.SeedDatabase();
 
-app.MapGet("/weatherforecast", () =>
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityService");
+    c.RoutePrefix = "";
+});
+
+app.MapControllers();
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

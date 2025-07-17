@@ -1,31 +1,57 @@
+using CatalogService.API.Extentions;
+using CatalogService.Application.Features.ProductAttributes.Comands.Create;
+using CatalogService.Infrastructure;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var services = builder.Services;
+var configuration = builder.Configuration;
+
+services.AddControllers()
+      .AddJsonOptions(options =>
+      {
+          options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+      });
+
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Catalog Service API",
+        Version = "v1",
+    });
+});
+
+builder.Services.AddDbContext<CatalogServiceDbContext>(options =>
+    options.UseNpgsql(configuration.GetConnectionString(nameof(CatalogServiceDbContext))));
+
+
+services.AddRepositories();
+services.ConfigureServices();
+
+builder.ConfigureOptions();
+
+services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+services.AddValidatorsFromAssembly(typeof(CreateProductAttributeCommandValidator).Assembly);
+
+services.AddMediatR(m =>
+    m.RegisterServicesFromAssembly(typeof(CreateProductAttributeCommandValidator).Assembly));
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog Service API");
+    options.RoutePrefix = string.Empty; 
+});
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
+app.MapControllers();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
