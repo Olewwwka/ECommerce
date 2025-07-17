@@ -14,8 +14,7 @@ namespace IdentityService.DAL.Repositories
         {
             var userEntity = await _context.Users
                 .Include(user => user.UserRoles)
-                .ThenInclude(roles => roles.Role)////////split query + недостатки
-                .AsNoTracking()
+                .ThenInclude(roles => roles.Role)
                 .SingleOrDefaultAsync(user => user.Email == email, cancellationToken);
 
             return userEntity;

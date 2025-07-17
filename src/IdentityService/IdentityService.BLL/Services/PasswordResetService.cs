@@ -35,6 +35,11 @@ namespace IdentityService.BLL.Services
 
             var isTokenValid = ValidateResetToken(existingUser, existingToken, token);
 
+            if(!isTokenValid)
+            {
+                throw new InvalidOperationException();
+            }
+
             var paswordHash = _passwordHasher.HashPassword(password);
 
             existingUser.PasswordHash = paswordHash;
@@ -61,7 +66,7 @@ namespace IdentityService.BLL.Services
             {
                 UserId = existingUser.Id,
                 Token = token,
-                ExspiresAt = DateTime.UtcNow.AddMinutes(30),
+                ExpiresAt = DateTime.UtcNow.AddMinutes(30),
                 IsUsed = false
             };
 
@@ -77,7 +82,7 @@ namespace IdentityService.BLL.Services
 
         private bool ValidateResetToken(UserEntity user, ResetTokenEntity? resetToken, string token)
         {
-            return resetToken!= null && user.Id == resetToken.Id && !resetToken.IsUsed && resetToken.IsExpired && resetToken.Token == token;
+            return resetToken!= null && user.Id == resetToken.UserId && !resetToken.IsUsed && !resetToken.IsExpired && resetToken.Token == token;
         }
 
     }
