@@ -66,5 +66,10 @@ namespace OrderService.API.Controllers
 
             return Ok(result);
         }
+        [HttpGet("exception")]
+        public async Task<IActionResult> Test()
+        {
+            throw new Exception("ex");
+        }
     }
 }

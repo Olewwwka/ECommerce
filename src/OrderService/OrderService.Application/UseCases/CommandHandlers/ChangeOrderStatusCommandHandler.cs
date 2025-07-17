@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using OrderService.Application.DTO;
 using OrderService.Application.UseCases.Commands;
 using OrderService.Domain.Abstractions;
 using OrderService.Domain.Enums;
@@ -10,11 +9,9 @@ namespace OrderService.Application.UseCases.CommandHandlers
 {
     public class ChangeOrderStatusCommandHandler : IRequestHandler<ChangeOrderStatusCommand, Guid>
     {
-        private readonly IMapper _mapper;
         private readonly IOrderReposotory _orderRepository;
-        public ChangeOrderStatusCommandHandler(IMapper mapper, IOrderReposotory orderRepository)
+        public ChangeOrderStatusCommandHandler(IOrderReposotory orderRepository)
         {
-            _mapper = mapper;
             _orderRepository = orderRepository;
         }
         public async Task<Guid> Handle(ChangeOrderStatusCommand request, CancellationToken cancellationToken)

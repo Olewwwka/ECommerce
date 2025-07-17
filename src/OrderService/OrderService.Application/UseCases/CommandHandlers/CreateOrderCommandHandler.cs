@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using OrderService.Application.DTO;
 using OrderService.Application.UseCases.Commands;
 using OrderService.Domain.Abstractions;
 using OrderService.Domain.Entities;
