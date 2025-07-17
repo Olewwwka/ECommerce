@@ -3,6 +3,7 @@ using BasketService.Application.UseCases.Commands.Baskets;
 using BasketService.Application.UseCases.Queries.Baskets;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 
 namespace BasketService.API.Controllers
 {
@@ -44,6 +45,11 @@ namespace BasketService.API.Controllers
             var result = await _mediator.Send(command, cancellationToken);
 
             return Ok(result);
+        }
+        [HttpGet("exception")]
+        public async Task<IActionResult> Test()
+        {
+            throw new RedisConnectionException(ConnectionFailureType.UnableToConnect, "ex");
         }
     }
 }

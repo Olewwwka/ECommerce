@@ -1,16 +1,28 @@
 using BasketService.API.Extensions;
+using BasketService.API.Filters;
 using BasketService.Application.Mappers;
 using BasketService.Application.UseCases.Commands.Baskets;
 using BasketService.Application.Validators;
 using FluentValidation;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configurations = builder.Configuration;
+var configuration = builder.Configuration;
 var services = builder.Services;
 
-services.AddControllers();
+builder.WebHost.UseUrls("http://localhost:7000");
+
+builder.AddLogger();
+
+builder.Host.UseSerilog();
+
+services.AddControllers(options =>
+{
+    options.Filters.Add<LogResultFilter>();
+});
+
 
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>
@@ -35,7 +47,9 @@ builder.ConfigureOptions();
 services.AddMediatR(m =>
     m.RegisterServicesFromAssembly(typeof(DeleteBasketCommand).Assembly));
 
+
 var app = builder.Build();
+
 
 app.AddMiddlewares();
 

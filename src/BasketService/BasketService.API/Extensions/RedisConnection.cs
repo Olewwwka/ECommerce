@@ -10,12 +10,6 @@ namespace BasketService.API.Extensions
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(options =>
                  ConnectionMultiplexer.Connect(connectionString));
-
-            builder.Services.AddScoped<IDatabase>(sp =>
-            {
-                var multiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
-                return multiplexer.GetDatabase();
-            });
         }
     }
 }
