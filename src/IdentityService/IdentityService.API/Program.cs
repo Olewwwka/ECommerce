@@ -1,15 +1,26 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using IdentityService.Api.Extentions;
+using IdentityService.Api.Filters;
 using IdentityService.API.Extentions;
 using IdentityService.BLL.Options;
 using IdentityService.BLL.Validation;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
+
+builder.AddLogger();
+
+builder.Host.UseSerilog();
+
+services.AddControllers(options =>
+{
+    options.Filters.Add<LogResultFilter>();
+});
 
 builder.AddDatabases();
 
@@ -17,9 +28,6 @@ builder.ConfigureOptions();
 
 services.AddApiAutorization(configuration,
     builder.Services.BuildServiceProvider().GetRequiredService<IOptions<JwtOptions>>());
-
-
-services.AddControllers();
 
 services.AddRepositories();
 
