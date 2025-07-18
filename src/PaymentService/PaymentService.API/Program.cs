@@ -1,6 +1,12 @@
 using Microsoft.OpenApi.Models;
 using PaymentService.API.Extensions;
+using PaymentService.Application.Mappers;
 using PaymentService.Domain.Abstractions.Services;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+
+BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -23,6 +29,8 @@ services.AddSwaggerGen(options =>
 });
 
 builder.ConfigureServices();
+
+builder.Services.AddAutoMapper(typeof(ReceiptProfile).Assembly);
 
 var app = builder.Build();
 

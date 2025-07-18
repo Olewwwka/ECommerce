@@ -5,7 +5,7 @@ namespace PaymentService.Infrastructure.Repositories
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        private readonly IMongoCollection<T> _collection;
+        protected readonly IMongoCollection<T> _collection;
         protected RepositoryBase(IMongoDatabase database, string collection)
         {
             _collection = database.GetCollection<T>(collection);
@@ -35,7 +35,7 @@ namespace PaymentService.Infrastructure.Repositories
             return entity;
         }
 
-        public virtual async Task<List<T>> GetPaginated(int page, int pageSize, CancellationToken cancellationToken)
+        public virtual async Task<List<T>> GetPaginated( int page, int pageSize, CancellationToken cancellationToken)
         {
             var result = await _collection.Find(_ => true)
                 .Skip((page - 1) * pageSize)
