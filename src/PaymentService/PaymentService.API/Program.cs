@@ -1,31 +1,46 @@
+using Microsoft.OpenApi.Models;
+using PaymentService.API.Extensions;
+using PaymentService.Domain.Abstractions.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
+
+services.AddControllers();
+
+builder.ConfigureOptions();
+builder.ConnectToDb();
+builder.AddRepositories();
+
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Payment Service API",
+        Version = "v1",
+    });
+});
+
+builder.ConfigureServices();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
+using (var scope = app.Services.CreateScope())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    var initializer = scope.ServiceProvider.GetRequiredService<IMongoInitializer>();
+    await initializer.InitializeAsync();
+}
 
-app.MapGet("/weatherforecast", () =>
+
+app.MapControllers();
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Payment Service API");
+    options.RoutePrefix = "";
+});
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
