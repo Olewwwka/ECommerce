@@ -5,6 +5,8 @@ using PaymentService.Domain.Abstractions.Services;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+using Serilog;
+using PaymentService.API.Filters;
 
 BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
@@ -12,7 +14,14 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.AddControllers();
+builder.AddLogger();
+
+builder.Host.UseSerilog();
+
+services.AddControllers(options =>
+{
+    options.Filters.Add<LogResultFilter>();
+});
 
 builder.ConfigureOptions();
 builder.ConnectToDb();
@@ -40,6 +49,7 @@ using (var scope = app.Services.CreateScope())
     await initializer.InitializeAsync();
 }
 
+app.AddMiddlewares();
 
 app.MapControllers();
 
