@@ -14,6 +14,7 @@ namespace CatalogService.Infrastructure
         public DbSet<ProductAttribute> Attributes { get; set; }
         public DbSet<ProductAttributeValue> AttributeValues { get; set; }
         public DbSet<ProductAttributeValue> ProductAttributeValues { get; set; }
+        public DbSet<ProductPriceHistory> ProductPriceHistory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
