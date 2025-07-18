@@ -5,14 +5,25 @@ using OrderService.Application.UseCases.Commands;
 using OrderService.Application.Validators;
 using OrderService.Domain.Abstractions.Services;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using OrderService.API.Extentions;
+using OrderService.API.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 var configurations = builder.Configuration;
 
-services.AddControllers();
+builder.WebHost.UseUrls("http://localhost:7001");
+
+builder.AddLogger();
+
+builder.Host.UseSerilog();
+
+services.AddControllers(options =>
+{
+    options.Filters.Add<LogResultFilter>();
+});
 
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>

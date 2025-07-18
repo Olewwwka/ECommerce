@@ -1,9 +1,9 @@
-﻿using BasketService.API.Filters;
+﻿using OrderService.API.Filters;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.Elasticsearch;
 
-namespace BasketService.API.Extensions
+namespace OrderService.API.Extensions
 {
     public static class LoggerExtension
     {
@@ -20,7 +20,7 @@ namespace BasketService.API.Extensions
                         new Uri(builder.Configuration.GetValue<string>("Elk")))
                     {
                         AutoRegisterTemplate = true,
-                        IndexFormat = $"ecommerce-basket-{DateTime.UtcNow:yyyy-MM}"
+                        IndexFormat = $"ecommerce-order-{DateTime.UtcNow:yyyy-MM}"
                     }))
                 .WriteTo.Logger(options => options
                     .Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Fatal || e.Level == LogEventLevel.Warning)
@@ -28,7 +28,7 @@ namespace BasketService.API.Extensions
                         new Uri(builder.Configuration.GetValue<string>("Elk")))
                     {
                         AutoRegisterTemplate = true,
-                        IndexFormat = $"critical-ecommerce-basket{DateTime.UtcNow:yyyy-MM}"
+                        IndexFormat = $"critical-ecommerce-order{DateTime.UtcNow:yyyy-MM}"
                     }))
                 .CreateLogger();
 
