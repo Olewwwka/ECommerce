@@ -9,10 +9,13 @@ namespace PaymentService.API.Extensions
     {
         public static void AddLogger(this WebApplicationBuilder builder)
         {
+            var serviceName = builder.Environment.ApplicationName;
+
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentName()
+                .Enrich.WithProperty("ServiceName", serviceName)
                 .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
                 .WriteTo.Logger(options => options
                     .Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Information)
