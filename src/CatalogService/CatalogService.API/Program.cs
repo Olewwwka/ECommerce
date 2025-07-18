@@ -1,10 +1,11 @@
 using CatalogService.API.Extentions;
+using CatalogService.API.Filters;
 using CatalogService.Application.Features.ProductAttributes.Comands.Create;
 using CatalogService.Infrastructure;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
+using Serilog;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,11 +13,18 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.AddControllers()
-      .AddJsonOptions(options =>
-      {
-          options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-      });
+builder.AddLogger();
+
+builder.Host.UseSerilog();
+
+services.AddControllers(options =>
+    {
+        options.Filters.Add<LogResultFilter>();
+    })
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>
@@ -45,6 +53,8 @@ services.AddMediatR(m =>
     m.RegisterServicesFromAssembly(typeof(CreateProductAttributeCommandValidator).Assembly));
 
 var app = builder.Build();
+
+app.AddMiddlewares();
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
