@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
 
-namespace BasketService.API.Extentions
+namespace BasketService.API.Extensions
 {
     public static class RedisConnection
     {
@@ -11,6 +10,12 @@ namespace BasketService.API.Extentions
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(options =>
                  ConnectionMultiplexer.Connect(connectionString));
+
+            builder.Services.AddScoped<IDatabase>(sp =>
+            {
+                var multiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
+                return multiplexer.GetDatabase();
+            });
         }
     }
 }
