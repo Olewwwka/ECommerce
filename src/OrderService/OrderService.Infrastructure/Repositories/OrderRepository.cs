@@ -17,38 +17,119 @@ namespace OrderService.Infrastructure.Repositories
         }
         public async Task<Guid> CreateAsync(Order order)
         {
-            await _connection.ExecuteAsync(Queries.CreateOrder, order);
+            _connection.Open();
+
+            using var transaction = _connection.BeginTransaction();
+
+            try
+            {
+                await _connection.ExecuteAsync(Queries.CreateOrder, new
+                {
+                    order.Id,
+                    order.UserId,
+                    Status = order.Status.ToString(),
+                    CreatedAt = order.CreatedAt,
+                    order.TotalPrice
+                }, transaction);
+
+                foreach (var item in order.Items)
+                {
+                    await _connection.ExecuteAsync(Queries.AddItem, new
+                    {
+                        item.Id,
+                        OrderId = order.Id,
+                        item.ProductId,
+                        item.Price,
+                        item.Count
+                    }, transaction);
+                }
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
 
             return order.Id;
         }
 
         public async Task<Guid> DeleteAsync(Guid id)
         {
-            await _connection.ExecuteAsync(Queries.DeleteOrder, new { Id = id});
+            await _connection.ExecuteAsync(Queries.DeleteOrder, new
+            {
+                Id = id
+            });
 
             return id;
         }
 
-        public async Task<Order> GetByIdAsync(Guid id)
+        public async Task<Order?> GetByIdAsync(Guid id)
         {
-            var result = await _connection.QuerySingleOrDefaultAsync<Order>(
-                Queries.GetOrderById, new { Id = id });
+            var orderDictionary = new Dictionary<Guid, Order>();
 
-            return result;
+            var result = await _connection.QueryAsync<Order, OrderItem, Order>(
+                Queries.GetOrderById,
+                (order, item) =>
+                {
+                    if (!orderDictionary.TryGetValue(order.Id, out var currentOrder))
+                    {
+                        currentOrder = order;
+                        currentOrder.Items = new List<OrderItem>();
+                        orderDictionary.Add(currentOrder.Id, currentOrder);
+                    }
+
+                    if (item != null && item.Id != Guid.Empty)
+                    {
+                        currentOrder.Items.Add(item);
+                    }
+
+                    return currentOrder;
+                },
+                new { Id = id },
+                splitOn: "Id"
+            );
+
+            return orderDictionary.Values.FirstOrDefault();
         }
 
         public async Task<List<Order>> GetByUserId(Guid userId)
         {
-            var result = await _connection.QueryAsync<Order>(
-               Queries.GetOrdersByUserId, new { UserId = userId });
+            var orderDictionary = new Dictionary<Guid, Order>();
 
-            return result.ToList();
+            var result = await _connection.QueryAsync<Order, OrderItem, Order>(
+                Queries.GetOrdersByUserId,
+                (order, item) =>
+                {
+                    if (!orderDictionary.TryGetValue(order.Id, out var currentOrder))
+                    {
+                        currentOrder = order;
+                        currentOrder.Items = new List<OrderItem>();
+                        orderDictionary.Add(currentOrder.Id, currentOrder);
+                    }
+
+                    if (item != null && item.Id != Guid.Empty)
+                    {
+                        currentOrder.Items.Add(item);
+                    }
+
+                    return currentOrder;
+                },
+                new { UserId = userId },
+                splitOn: "Id"
+            );
+
+            return orderDictionary.Values.ToList();
         }
 
         public async Task<Guid> UpdateStatusAsync(Guid orderId, OrderStatus status)
         {
-            await _connection.ExecuteAsync(
-                Queries.UpdateOrderStatus, new { OrderId = orderId, Status = status.ToString() });
+            await _connection.ExecuteAsync(Queries.UpdateOrderStatus, new
+            {
+                OrderId = orderId,
+                Status = status.ToString()
+            });
 
             return orderId;
         }

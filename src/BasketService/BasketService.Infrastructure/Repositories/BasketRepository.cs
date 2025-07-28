@@ -27,11 +27,6 @@ namespace BasketService.Infrastructure.Repositories
             var basket = await _redis
                 .StringGetAsync(userId.ToString());
 
-            if(basket.IsNullOrEmpty)
-            {
-                return null;
-            }
-
             var data = JsonSerializer.Deserialize<Basket>(basket);
 
             return data;

@@ -2,11 +2,37 @@
 {
     public static class Queries
     {
-        public static string GetOrderById = @"select * from orders where id = @Id";
+        public static string GetOrderById = @"select 
+                o.id as Id,
+                o.user_id as UserId,
+                o.status as Status,
+                o.created_at as CreatedAt,
+                o.total_price as TotalPrice,
+  
+                oi.id as Id,
+                oi.order_id as OrderId,
+                oi.product_id as ProductId,
+                oi.price as Price,
+                oi.count as Count
+            from orders o inner join order_items oi on 
+                oi.order_id = o.id where o.id = @Id";
 
-        public static string GetOrdersByUserId = @"select * from orders where user_id = @UserId";
+        public static string GetOrdersByUserId = @"select 
+                o.id as Id,
+                o.user_id as UserId,
+                o.status as Status,
+                o.created_at as CreatedAt,
+                o.total_price as TotalPrice,
+  
+                oi.id as Id,
+                oi.order_id as OrderId,
+                oi.product_id as ProductId,
+                oi.price as Price,
+                oi.count as Count
+            from orders o inner join order_items oi on 
+                oi.order_id = o.id where o.user_id = @UserId";
 
-        public static string UpdateOrderStatus = @"update orders set status = @Status where id = @Id";
+        public static string UpdateOrderStatus = @"update orders set status = @Status where id = @orderId";
 
         public static string DeleteOrder = @"delete from orders where id = @Id";
 

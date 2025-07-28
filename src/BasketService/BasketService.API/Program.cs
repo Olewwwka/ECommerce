@@ -1,3 +1,4 @@
+
 using BasketService.API.Extensions;
 using BasketService.Application.Mappers;
 using BasketService.Application.UseCases.Commands.Baskets;
@@ -5,10 +6,18 @@ using BasketService.Application.Validators;
 using FluentValidation;
 using Microsoft.OpenApi.Models;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 var configurations = builder.Configuration;
 var services = builder.Services;
+
+
+builder.ConnectToDatabase();
+
+services.AddRepositories();
+
+var app = builder.Build();
 
 services.AddControllers();
 

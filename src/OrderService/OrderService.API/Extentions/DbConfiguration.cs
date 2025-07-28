@@ -3,7 +3,7 @@ using Npgsql;
 using OrderService.Domain.Options;
 using System.Data;
 
-namespace OrderService.API.Extentions
+namespace OrderService.API.Extensions
 {
     public static class DbConfiguration
     {

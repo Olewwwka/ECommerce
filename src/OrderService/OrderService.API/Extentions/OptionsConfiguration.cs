@@ -1,6 +1,6 @@
 ﻿using OrderService.Domain.Options;
 
-namespace OrderService.API.Extentions
+namespace OrderService.API.Extensions
 {
     public static class OptionsConfiguration
     {
