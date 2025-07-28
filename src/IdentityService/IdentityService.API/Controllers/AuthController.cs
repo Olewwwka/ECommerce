@@ -22,6 +22,7 @@ namespace CatalogService.API.Controllers
             _passwordResetService = passwordResetService;
         }
         [HttpPost("register")]
+
         public async Task<IActionResult> Register([FromBody]RegisterRequest regiserRequest, CancellationToken cancellationToken)
         {
             var authResponse = await _authService.RegisterAsync(regiserRequest, cancellationToken);
@@ -32,9 +33,9 @@ namespace CatalogService.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody]LoginRequest loginRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> Login(LoginRequest request, CancellationToken cancellationToken)
         {
-            var authResponse = await _authService.LoginAsync(loginRequest, cancellationToken);
+            var authResponse = await _authService.LoginAsync(request, cancellationToken);
 
             SetCookie(authResponse);
 
