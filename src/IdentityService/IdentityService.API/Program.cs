@@ -1,16 +1,27 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using IdentityService.API.Extentions;
-using IdentityService.BLL.Options;
+using IdentityService.BLL.Validation;
 using IdentityService.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
-
+using Microsoft.AspNetCore.Authentication;
+using IdentityService.API.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
 services.AddControllers();
+
+services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+services.AddFluentValidationAutoValidation();
+
+services.AddAuthentication("CustomAuth")
+    .AddScheme<AuthenticationSchemeOptions, CustomAuthHandler>("CustomAuth", options => { });
+
+services.AddAuthorization();
 
 services.AddEndpointsApiExplorer();
 
@@ -26,17 +37,15 @@ services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 services.AddServices();
 
-services.AddDbContext<IdentityServiceDbContext>(options =>
-{
-    options.UseNpgsql(configuration.GetConnectionString(nameof(IdentityServiceDbContext)));
-});
+builder.AddDatabases();
 
-services.AddSingleton<IConnectionMultiplexer>(cm =>
-    ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")));
-
-services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+builder.ConfigureOptions();
 
 var app = builder.Build();
+
+app.AddMiddlewares();
+
+app.SeedDatabase();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -45,6 +54,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "";
 });
 
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

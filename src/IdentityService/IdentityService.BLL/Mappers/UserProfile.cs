@@ -12,7 +12,6 @@ namespace IdentityService.BLL.Mappers
         {
             CreateMap<RegisterRequest, UserEntity>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => "User"))
                 .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => new PasswordHasher().HashPassword(src.Password)));
         }
     }

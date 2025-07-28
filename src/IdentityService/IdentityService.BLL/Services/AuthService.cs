@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using IdentityService.BLL.Abstractions;
 using IdentityService.BLL.DTO;
+using IdentityService.BLL.Exceptions;
 using IdentityService.DAL.Abstractions;
+using IdentityService.DAL.Constants;
 using IdentityService.DAL.Entities;
 
 namespace IdentityService.BLL.Services
@@ -13,18 +15,21 @@ namespace IdentityService.BLL.Services
         private readonly IMapper _mapper;
         private readonly IAccessTokenService _tokenService;
         private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IRolesRepository _rolesRepository;
 
         public AuthService(IUsersRepository usersRepository, 
             IPasswordHasher passwordHasher, 
             IMapper mapper, 
             IAccessTokenService tokenService, 
-            IRefreshTokenService refreshTokenService)
+            IRefreshTokenService refreshTokenService,
+            IRolesRepository rolesRepository)
         {
             _usersRepository = usersRepository;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
             _tokenService = tokenService;
             _refreshTokenService = refreshTokenService;
+            _rolesRepository = rolesRepository;
         }
 
         public async Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
@@ -33,17 +38,19 @@ namespace IdentityService.BLL.Services
 
             if (existingUser == null)
             {
-                throw new Exception();
+                throw new UserNotFoundException("User not found!");
             }
 
             var isPasswordCorrect = _passwordHasher.VerifyPassword(request.Password, existingUser.PasswordHash);
 
             if(!isPasswordCorrect)
             {
-                throw new Exception();
+                throw new IncorrectPasswordException("Incorrect password!!");
             }
 
-            var accessToken = _tokenService.GenerateAccessToken(existingUser.Id, existingUser.Name, existingUser.Email, existingUser.Role);
+            var userRoles = existingUser.UserRoles.Select(ur => ur.Role.Name);
+
+            var accessToken = _tokenService.GenerateAccessToken(existingUser.Id, existingUser.Name, existingUser.Email, userRoles);
 
             var refreshToken = _refreshTokenService.GenerateRefreshToken(existingUser.Id);
 
@@ -58,14 +65,28 @@ namespace IdentityService.BLL.Services
 
             if(existingUser != null)
             {
-                throw new Exception(); 
+                throw new UserAlreadyExistsException($"User with email {request.Email} already exists!");
             }
 
             var userEntity = _mapper.Map<UserEntity>(request);
 
-            await _usersRepository.CreateUserAsync(userEntity, cancellationToken);
+            var defaultUserRole = await _rolesRepository.GetRoleByNameAsync(UserRoles.User, cancellationToken);
 
-            var accessToken = _tokenService.GenerateAccessToken(userEntity.Id, userEntity.Name, userEntity.Email, userEntity.Role);
+            userEntity.UserRoles = new List<UserRoleEntity>
+            {
+                new UserRoleEntity
+                {
+                    User = userEntity,
+                    RoleId = defaultUserRole.Id,
+                    Role = defaultUserRole
+                }
+            };
+
+            await _usersRepository.AddAsync(userEntity, cancellationToken);
+
+            var userRoles = userEntity.UserRoles.Select(ur => ur.Role.Name).ToList();
+
+            var accessToken = _tokenService.GenerateAccessToken(userEntity.Id, userEntity.Name, userEntity.Email, userRoles);
 
             var refreshToken = _refreshTokenService.GenerateRefreshToken(userEntity.Id);
 
@@ -80,22 +101,24 @@ namespace IdentityService.BLL.Services
 
             if(existingRefreshToken == null)
             {
-                throw new Exception();
+                throw new RefreshTokenNotFoundException("Refresh token not found!");
             }
 
             if(existingRefreshToken.IsExpired)
             {
-                throw new Exception();
+                throw new RefreshTokenExpiredException("Refresh token expired!");
             }
 
-            var existingUser = await _usersRepository.GetUserByIdAsync(existingRefreshToken.UserId, cancellationToken);
+            var existingUser = await _usersRepository.GetByIdAsync(existingRefreshToken.UserId, cancellationToken);
 
             if(existingUser == null)
             {
-                throw new Exception();
+                throw new UserNotFoundException("User not found!");
             }
 
-            var newAccessToken = _tokenService.GenerateAccessToken(existingUser.Id, existingUser.Name, existingUser.Email, existingUser.Role);
+            var userRoles = existingUser.UserRoles.Select(ur => ur.Role.Name);
+
+            var newAccessToken = _tokenService.GenerateAccessToken(existingUser.Id, existingUser.Name, existingUser.Email, userRoles);
 
             var newRefreshToken = _refreshTokenService.GenerateRefreshToken(existingUser.Id);
 

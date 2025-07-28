@@ -7,8 +7,8 @@ using IdentityService.DAL.Entities;
 
 namespace IdentityService.DAL.Abstractions
 {
-    public interface IUsersRepository : IRepositoryBase<UserEntity>
+    public interface IResetTokenRepository : IRepositoryBase<ResetTokenEntity>
     {
-        Task<UserEntity> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<ResetTokenEntity> GetResetTokenByTokenAsync(string token, CancellationToken cancellationToken);
     }
 }
