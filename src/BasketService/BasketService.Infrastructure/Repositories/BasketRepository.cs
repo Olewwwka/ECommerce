@@ -1,5 +1,7 @@
 ﻿using BasketService.Domain.Abstractions;
 using BasketService.Domain.Entities;
+using BasketService.Domain.Options;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -8,9 +10,11 @@ namespace BasketService.Infrastructure.Repositories
     public class BasketRepository : IBasketRepository
     {
         private readonly IDatabase _redis;
-        public BasketRepository(IDatabase redis)
+        private readonly TimeSpan _expiryHours;
+        public BasketRepository(IConnectionMultiplexer redis, IOptions<RedisOptions> options)
         {
-            _redis = redis;
+            _redis = redis.GetDatabase();
+            _expiryHours = TimeSpan.FromHours(options.Value.ExpiryHours);
         }
 
         public async Task DeleteAsync(Guid userId)
@@ -32,7 +36,8 @@ namespace BasketService.Infrastructure.Repositories
         {
             var result = await _redis.StringSetAsync(
                 basket.UserId.ToString(),
-                JsonSerializer.Serialize(basket));
+                JsonSerializer.Serialize(basket),
+                _expiryHours);
 
             return basket;
         }
