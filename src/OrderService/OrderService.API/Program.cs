@@ -1,18 +1,27 @@
 using FluentValidation;
+using Microsoft.OpenApi.Models;
 using OrderService.API.Extensions;
+using OrderService.API.Extentions;
+using OrderService.API.Filters;
 using OrderService.Application.Mappers;
 using OrderService.Application.UseCases.Commands;
 using OrderService.Application.Validators;
 using OrderService.Domain.Abstractions.Services;
-using Microsoft.OpenApi.Models;
-using OrderService.API.Extentions;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 var configurations = builder.Configuration;
 
-services.AddControllers();
+builder.AddLogger();
+
+builder.Host.UseSerilog();
+
+services.AddControllers(options =>
+{
+    options.Filters.Add<LogResultFilter>();
+});
 
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>
