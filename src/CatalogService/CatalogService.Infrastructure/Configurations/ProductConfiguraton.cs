@@ -1,4 +1,5 @@
-﻿using CatalogService.Domain.Entities;
+﻿using CatalogService.Domain.Constants;
+using CatalogService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,10 +13,10 @@ namespace CatalogService.Infrastructure.Configurations
 
             builder.Property(p => p.Name)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(ValidationConstants.MaxProductNameLenght);
 
             builder.Property(p => p.Description)
-                .HasMaxLength(500);
+                .HasMaxLength(ValidationConstants.MaxProductDescriptionLenght);
 
             builder.Property(p => p.Price)
                 .IsRequired();
