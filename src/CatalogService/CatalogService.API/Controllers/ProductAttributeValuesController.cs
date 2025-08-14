@@ -1,8 +1,6 @@
 ﻿using CatalogService.Application.DTO.ProductAttributeValues;
-using CatalogService.Application.Features.ProductAttributesValues.Commands.Create;
-using CatalogService.Application.Features.ProductAttributesValues.Commands.Delete;
-using CatalogService.Application.Features.ProductAttributesValues.Commands.Update;
-using CatalogService.Application.Features.ProductAttributesValues.Queries.GetById;
+using CatalogService.Application.UseCases.Commands.ProductAttributeValues;
+using CatalogService.Application.UseCases.Queries.ProductAttributeValues;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

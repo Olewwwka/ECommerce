@@ -1,4 +1,5 @@
-﻿using CatalogService.Domain.Entities;
+﻿using CatalogService.Domain.Constants;
+using CatalogService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -17,7 +18,7 @@ namespace CatalogService.Infrastructure.Configurations
 
             builder.Property(p => p.Value)
                    .IsRequired()
-                   .HasMaxLength(50);
+                   .HasMaxLength(ValidationConstants.MaxProductAttributeValueLenght);
 
             builder.HasOne(p => p.Product)
                    .WithMany(p => p.AttributeValues)
@@ -25,7 +26,7 @@ namespace CatalogService.Infrastructure.Configurations
 
             builder.HasOne(p => p.Attribute)
                    .WithMany()
-                   .HasForeignKey(p => p.AttributeId)
+                   .HasForeignKey(p => p.ProductAttributeId)
                    .OnDelete(DeleteBehavior.Cascade);
         }
     }

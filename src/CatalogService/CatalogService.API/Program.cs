@@ -1,31 +1,81 @@
+using CatalogService.API.Extentions;
+using CatalogService.API.Filters;
+using CatalogService.API.Handlers;
+using CatalogService.Application.Validators.ProductAttributeValues;
+using CatalogService.Infrastructure;
+using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var services = builder.Services;
+var configuration = builder.Configuration;
+
+builder.AddLogger();
+
+builder.Host.UseSerilog();
+
+services.AddControllers(options =>
+{
+    options.Filters.Add<LogResultFilter>();
+})
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Catalog Service API",
+        Version = "v1",
+    });
+});
+
+builder.Services.AddDbContext<CatalogServiceDbContext>(options =>
+    options.UseNpgsql(configuration.GetConnectionString(nameof(CatalogServiceDbContext))));
+
+
+services.AddRepositories();
+
+services.ConfigureServices();
+
+builder.ConfigureOptions();
+
+services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+services.AddValidatorsFromAssembly(typeof(CreateProductAttributeValueValidator).Assembly);
+
+services.AddMediatR(m =>
+    m.RegisterServicesFromAssembly(typeof(CreateProductAttributeValueValidator).Assembly));
+
+services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "Custom";
+    options.DefaultChallengeScheme = "Custom";
+    options.DefaultForbidScheme = "Custom";
+})
+.AddScheme<AuthenticationSchemeOptions, AuthenticationHandler>("Custom", null);
+
+
+services.AddBrokers(configuration);
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+app.AddMiddlewares();
 
-var summaries = new[]
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog Service API");
+    options.RoutePrefix = string.Empty;
+});
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
+app.MapControllers();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
