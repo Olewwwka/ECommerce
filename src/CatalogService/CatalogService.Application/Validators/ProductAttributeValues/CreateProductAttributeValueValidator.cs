@@ -2,11 +2,11 @@
 using CatalogService.Domain.Constants;
 using FluentValidation;
 
-namespace CatalogService.Application.Validatorss.ProductAttributeValues
+namespace CatalogService.Application.Validators.ProductAttributeValues
 {
-    public class UpdateProductAttributeValueCommandValidator : AbstractValidator<UpdateProductAttributeValueCommand>
+    public class CreateProductAttributeValueValidator : AbstractValidator<CreateProductAttributeValueCommand>
     {
-        public UpdateProductAttributeValueCommandValidator()
+        public CreateProductAttributeValueValidator()
         {
             RuleFor(a => a.ProductId)
                 .NotEmpty().WithMessage(ValidationConstants.NoEmptyMessage);
