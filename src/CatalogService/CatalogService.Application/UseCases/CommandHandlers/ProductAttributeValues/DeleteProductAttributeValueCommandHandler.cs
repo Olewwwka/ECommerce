@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using CatalogService.Application.Features.ProductAttributesValues.Commands.Create;
 using CatalogService.Application.UseCases.Commands.ProductAttributeValues;
 using CatalogService.Domain.Abstractions.Repositories;
-using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
-using CatalogService.Domain.Specifications.Application;
-using CatalogService.Domain.Specifications.Custom;
 using CatalogService.Domain.Specifications.Infrastructure;
 using MediatR;
 

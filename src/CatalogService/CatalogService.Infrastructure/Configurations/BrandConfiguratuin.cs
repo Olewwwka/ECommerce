@@ -1,4 +1,5 @@
-﻿using CatalogService.Domain.Entities;
+﻿using CatalogService.Domain.Constants;
+using CatalogService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,11 +13,11 @@ namespace CatalogService.Infrastructure.Configurations
 
             builder.Property(b => b.Name)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(ValidationConstants.MaxBrandNameLenght);
 
             builder.Property(b => b.LogoUrl)
                 .IsRequired()
-                .HasMaxLength(255);
+                .HasMaxLength(ValidationConstants.MaxBrandURLLenght);
         }
     }
 }
