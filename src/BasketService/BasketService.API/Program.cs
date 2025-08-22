@@ -1,16 +1,29 @@
 
 using BasketService.API.Extensions;
+using BasketService.API.Filters;
 using BasketService.Application.Mappers;
 using BasketService.Application.UseCases.Commands.Baskets;
 using BasketService.Application.Validators;
 using FluentValidation;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configurations = builder.Configuration;
 var services = builder.Services;
+
+builder.WebHost.UseUrls("http://localhost:5003");
+
+builder.AddLogger();
+
+builder.Host.UseSerilog();
+
+services.AddControllers(options =>
+{
+    options.Filters.Add<LogResultFilter>();
+});
 
 
 builder.ConnectToDatabase();
