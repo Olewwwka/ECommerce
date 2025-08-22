@@ -1,4 +1,5 @@
-﻿using CatalogService.Domain.Entities;
+﻿using CatalogService.Domain.Constants;
+using CatalogService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,7 +13,7 @@ namespace CatalogService.Infrastructure.Configurations
 
             builder.Property(p => p.Name)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(ValidationConstants.MaxProductAttributeNameLenght);
 
             builder.Property(p => p.AttributeType)
                 .HasConversion<int>()

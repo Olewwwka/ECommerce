@@ -2,7 +2,7 @@
 using CatalogService.Domain.Constants;
 using FluentValidation;
 
-namespace CatalogService.Application.Validatorss.ProductAttributeValues
+namespace CatalogService.Application.Validators.ProductAttributeValues
 {
     public class DeleteProductAttributeValueCommandValidator : AbstractValidator<DeleteProductAttributeValueCommand>
     {
