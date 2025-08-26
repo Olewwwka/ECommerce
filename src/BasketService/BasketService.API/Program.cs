@@ -1,10 +1,12 @@
 
 using BasketService.API.Extensions;
 using BasketService.API.Filters;
+using BasketService.API.Handlers;
 using BasketService.Application.Mappers;
 using BasketService.Application.UseCases.Commands.Baskets;
 using BasketService.Application.Validators;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -30,8 +32,6 @@ builder.ConnectToDatabase();
 
 services.AddRepositories();
 
-var app = builder.Build();
-
 services.AddControllers();
 
 services.AddEndpointsApiExplorer();
@@ -56,6 +56,16 @@ builder.ConfigureOptions();
 
 services.AddMediatR(m =>
     m.RegisterServicesFromAssembly(typeof(DeleteBasketCommand).Assembly));
+
+services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "Custom";
+    options.DefaultChallengeScheme = "Custom";
+    options.DefaultForbidScheme = "Custom";
+})
+.AddScheme<AuthenticationSchemeOptions, AuthenticationHandler>("Custom", null);
+
+services.AddAuthorization();
 
 var app = builder.Build();
 

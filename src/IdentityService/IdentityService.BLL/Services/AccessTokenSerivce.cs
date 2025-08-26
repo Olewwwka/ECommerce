@@ -1,22 +1,20 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using IdentityService.BLL.Abstractions;
+﻿using IdentityService.BLL.Abstractions;
 using IdentityService.BLL.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using IdentityService.BLL.DTO;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace IdentityService.BLL.Services
 {
-    public class AccessTokenSerivce : IAccessTokenService
+    public class AccessTokenService : IAccessTokenService
     {
         private readonly JwtOptions _jwtOptions;
-        public AccessTokenSerivce(IOptions<JwtOptions> options)
+        public AccessTokenService(IOptions<JwtOptions> options)
         {
             _jwtOptions = options.Value;
         }
-
         public string GenerateAccessToken(Guid id, string name, string email, IEnumerable<string> Roles)
         {
             var claims = new List<Claim>
@@ -41,8 +39,7 @@ namespace IdentityService.BLL.Services
 
             return new JwtSecurityTokenHandler().WriteToken(accessToken);
         }
-
-        public DTO.TokenValidationResult ValidateAccessToken(string accessToken)
+        public ClaimsPrincipal ValidateAccessToken(string accessToken)
         {
             var accessTokenHandler = new JwtSecurityTokenHandler();
 
@@ -60,57 +57,9 @@ namespace IdentityService.BLL.Services
                 ClockSkew = TimeSpan.Zero,
                 ValidateLifetime = true,
             };
+            var claims = accessTokenHandler.ValidateToken(accessToken, accesTokenValidationParametrs, out SecurityToken validatedToken);
 
-            try
-            {
-                var claims = accessTokenHandler.ValidateToken(accessToken, accesTokenValidationParametrs, out SecurityToken validatedToken);
-
-                return new DTO.TokenValidationResult()
-                {
-                    IsValid = true,
-                    Claims = claims
-                };
-            }
-            catch (SecurityTokenExpiredException ex)
-            {
-                return new DTO.TokenValidationResult()
-                {
-                    IsValid = false,
-                    ErrorMessage = "This token expired" + ex.Message
-                };
-            }
-            catch (SecurityTokenArgumentException ex)
-            {
-                return new DTO.TokenValidationResult()
-                {
-                    IsValid = false,
-                    ErrorMessage = "Access token has invalid arguments" + ex.Message
-                };
-            }
-            catch (SecurityTokenValidationException ex)
-            {
-                return new DTO.TokenValidationResult()
-                {
-                    IsValid = false,
-                    ErrorMessage = "Error validating token" + ex.Message
-                };
-            }
-            catch (SecurityTokenException ex)
-            {
-                return new DTO.TokenValidationResult()
-                {
-                    IsValid = false,
-                    ErrorMessage = "Invalid token" + ex.Message
-                };
-            }
-            catch (Exception ex)
-            {
-                return new DTO.TokenValidationResult()
-                {
-                    IsValid = false,
-                    ErrorMessage = "Error" + ex.Message
-                };
-            }
+            return claims;
         }
     }
 }

@@ -1,3 +1,5 @@
+using ApiGateway.Middleware;
+using GRPC;
 using MMLib.SwaggerForOcelot.DependencyInjection;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
@@ -17,6 +19,10 @@ configuration.AddOcelotWithSwaggerSupport(options =>
     options.Folder = "Config";
 });
 
+services.AddGrpcClient<TokenValidator.TokenValidatorClient>(options =>
+{
+    options.Address = new Uri(configuration.GetValue<string>("Grpc:Adress"));
+});
 
 services.AddOcelot(configuration);
 services.AddSwaggerForOcelot(builder.Configuration);
@@ -24,6 +30,8 @@ services.AddSwaggerForOcelot(builder.Configuration);
 services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseMiddleware<TokenValidationMiddleware>();
 
 app.UseAuthorization();
 
