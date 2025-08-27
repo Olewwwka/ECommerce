@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IdentityService.BLL.DTO;
-using IdentityService.DAL.Entities;
+﻿using IdentityService.BLL.DTO;
+using System.Security.Claims;
 
 namespace IdentityService.BLL.Abstractions
 {
     public interface IAccessTokenService
     {
         string GenerateAccessToken(Guid id, string name, string email, IEnumerable<string> roles);
-        TokenValidationResult ValidateAccessToken(string accessToken);
+        ClaimsPrincipal ValidateAccessToken(string accessToken);
     }
 }

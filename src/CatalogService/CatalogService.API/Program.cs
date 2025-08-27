@@ -3,11 +3,9 @@ using CatalogService.API.Filters;
 using CatalogService.API.Handlers;
 using CatalogService.Application.Validators.ProductAttributeValues;
 using CatalogService.Infrastructure;
-using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Serilog;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +14,6 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 
 builder.AddLogger();
-
-builder.Host.UseSerilog();
 
 services.AddControllers(options =>
 {
@@ -63,8 +59,20 @@ services.AddAuthentication(options =>
 })
 .AddScheme<AuthenticationSchemeOptions, AuthenticationHandler>("Custom", null);
 
+var app = builder.Build();
 
-services.AddBrokers(configuration);
+app.AddMiddlewares();
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog Service API");
+    options.RoutePrefix = string.Empty;
+});
+
+app.MapControllers();
+app.Run();
+
 
 var app = builder.Build();
 
