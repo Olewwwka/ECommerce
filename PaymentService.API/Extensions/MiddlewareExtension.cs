@@ -1,0 +1,14 @@
+﻿using PaymentService.API.Middleware;
+
+namespace PaymentService.API.Extensions
+{
+    public static class MiddlewareExtension
+    {
+        public static void AddMiddlewares(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionMiddleware>();
+            app.UseAuthentication();
+            app.UseAuthorization();
+        }
+    }
+}

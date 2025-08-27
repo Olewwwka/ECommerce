@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Validators\**" />
+		<EmbeddedResource Remove="Validators\**" />
+		<None Remove="Validators\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="12.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Ecommerce.Brokers\Ecommerce.Brokers.csproj" />
+		<ProjectReference Include="..\PaymentService.Domain\PaymentService.Domain.csproj" />
+		<ProjectReference Include="..\src\PaymentService\PaymentService.Domain\PaymentService.Domain.csproj" />
+	</ItemGroup>
+
+</Project>
