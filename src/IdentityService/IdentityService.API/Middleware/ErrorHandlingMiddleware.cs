@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using IdentityService.BLL.Exceptions;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IdentityService.API.Middleware
 {
@@ -51,7 +50,12 @@ namespace IdentityService.API.Middleware
                 await HandleError(context, StatusCodes.Status401Unauthorized, ex.Message);
                 _logger.LogWarning(ex, ex.Message);
             }
-            catch(Exception ex)
+            catch (InsufficientFundsException ex)
+            {
+                await HandleError(context, StatusCodes.Status409Conflict, ex.Message);
+                _logger.LogWarning(ex, ex.Message);
+            }
+            catch (Exception ex)
             {
                 await HandleError(context, StatusCodes.Status401Unauthorized, "Invalid server error =(");
                 _logger.LogCritical(ex, ex.Message);

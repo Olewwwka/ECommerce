@@ -7,6 +7,8 @@ namespace PaymentService.API.Extensions
         public static void AddMiddlewares(this IApplicationBuilder app)
         {
             app.UseMiddleware<ExceptionMiddleware>();
+            app.UseAuthentication();
+            app.UseAuthorization();
         }
     }
 }

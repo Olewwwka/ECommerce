@@ -3,20 +3,30 @@ using BasketService.Application.UseCases.Commands.Baskets;
 using BasketService.Application.UseCases.Queries.Baskets;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using StackExchange.Redis;
 
 namespace BasketService.API.Controllers
 {
+    /// <summary>
+    /// Сontroller for managing user baskets.
+    /// Provides endpoints to get, update, delete, and modify basket items.
+    /// </summary>
     [ApiController]
-    [Route("/baskets")]
+    [Route("baskets")]
     public class BasketsController : ControllerBase
     {
         private readonly IMediator _mediator;
+
         public BasketsController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Get basket for user by user ID.
+        /// </summary>
+        /// <param name="userId">Unique ID of user.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Basket of user.</returns>
         [HttpGet("{userId:guid}")]
         public async Task<IActionResult> GetByUserId(Guid userId, CancellationToken cancellationToken)
         {
@@ -27,6 +37,12 @@ namespace BasketService.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Delete basket for specific user by user ID.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The result of the delete operation.</returns>
         [HttpDelete("{userId:guid}")]
         public async Task<IActionResult> Delete(Guid userId, CancellationToken cancellationToken)
         {
@@ -37,6 +53,13 @@ namespace BasketService.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Update basket for specific user ID.
+        /// </summary>
+        /// <param name="userId">Unique ID of user.</param>
+        /// <param name="request">Updated basket data.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Updated basket.</returns>
         [HttpPut("{userId:guid}")]
         public async Task<IActionResult> Update(Guid userId, BasketDto request, CancellationToken cancellationToken)
         {
@@ -46,10 +69,23 @@ namespace BasketService.API.Controllers
 
             return Ok(result);
         }
-        [HttpGet("exception")]
-        public async Task<IActionResult> Test()
+
+        /// <summary>
+        /// Add item to user basket.
+        /// </summary>
+        /// <param name="userId">Unique ID of user.</param>
+        /// <param name="productId">Unique ID of product to add.</param>
+        /// <param name="quantity">Quantity of the product to add.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The updated basket with the new item.</returns>
+        [HttpPost("{userId:guid}/items")]
+        public async Task<IActionResult> AddItemToBasket(Guid userId, Guid productId, int quantity, CancellationToken cancellationToken)
         {
-            throw new RedisConnectionException(ConnectionFailureType.UnableToConnect, "ex");
+            var command = new AddItemToBasketCommand(userId, productId, quantity);
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(result);
         }
     }
 }

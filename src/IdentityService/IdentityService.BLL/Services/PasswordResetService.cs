@@ -5,6 +5,11 @@ using IdentityService.BLL.Exceptions;
 
 namespace IdentityService.BLL.Services
 {
+    /// <summary>
+    /// Serivce that contains logic to reset forgotten users password
+    /// Contains such methods, as send email message to reset password 
+    /// and reset password with help of recieved email token
+    /// </summary>
     public class PasswordResetService : IPasswordResetService
     {
         private readonly IUsersRepository _usersRepository;
@@ -22,6 +27,15 @@ namespace IdentityService.BLL.Services
             _resetTokenRepository = resetTokenRepository;
             _passwordHasher = passwordHasher;
         }
+        /// <summary>
+        /// Method to reset forgotten users password
+        /// </summary>
+        /// <param name="email">Email of user</param>
+        /// <param name="token">Unique token to reset password</param>
+        /// <param name="password">Password of user</param>
+        /// <param name="cancellationToken">A token that allows you to cancel an asynchronous operation</param>
+        /// <returns>Boolean result of operation(success or not)</returns>
+        /// <exception cref="UserNotFoundException">If user not found in database</exception>
         public async Task<bool> ResetPasswordAsync(string email, string token, string password, CancellationToken cancellationToken)
         {
             var existingUser = await _usersRepository.GetUserByEmailAsync(email, cancellationToken);

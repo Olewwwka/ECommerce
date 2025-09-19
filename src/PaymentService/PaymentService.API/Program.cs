@@ -1,20 +1,25 @@
+using Ecommerce.Brokers;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
-using PaymentService.API.Extensions;
-using PaymentService.Application.Mappers;
-using PaymentService.Domain.Abstractions.Services;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
-using Serilog;
+using PaymentService.API.Extensions;
 using PaymentService.API.Filters;
+using PaymentService.API.Handlers;
+using PaymentService.Application.Mappers;
+using PaymentService.Domain.Abstractions.Services;
+using Serilog;
 
-BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
+
 builder.AddLogger();
+
+builder.WebHost.UseUrls("http://localhost:5005");
 
 builder.Host.UseSerilog();
 
@@ -39,7 +44,28 @@ services.AddSwaggerGen(options =>
 
 builder.ConfigureServices();
 
-builder.Services.AddAutoMapper(typeof(ReceiptProfile).Assembly);
+
+services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserPolicy", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("User");
+    });
+});
+
+services.AddAutoMapper(typeof(ReceiptProfile).Assembly);
+services.AddBrokers(configuration);
+
+services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "Custom";
+    options.DefaultChallengeScheme = "Custom";
+    options.DefaultForbidScheme = "Custom";
+})
+.AddScheme<AuthenticationSchemeOptions, AuthenticationHandler>("Custom", null);
+
+services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -48,6 +74,9 @@ using (var scope = app.Services.CreateScope())
     var initializer = scope.ServiceProvider.GetRequiredService<IMongoInitializer>();
     await initializer.InitializeAsync();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.AddMiddlewares();
 
@@ -62,3 +91,4 @@ app.UseSwaggerUI(options =>
 
 app.Run();
 
+public partial class Program { }

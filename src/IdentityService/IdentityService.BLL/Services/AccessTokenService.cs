@@ -2,13 +2,16 @@
 using IdentityService.BLL.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.IdentityModel.Tokens.Experimental;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace IdentityService.BLL.Services
 {
+    /// <summary>
+    /// Serivce that contains logic to working with access tokens of users
+    /// Contains methods to generate and validate access tokens of users
+    /// </summary>
     public class AccessTokenService : IAccessTokenService
     {
         private readonly JwtOptions _jwtOptions;
@@ -16,7 +19,14 @@ namespace IdentityService.BLL.Services
         {
             _jwtOptions = options.Value;
         }
-
+        /// <summary>
+        /// Generate access token for user
+        /// </summary>
+        /// <param name="id">Unique ID of user</param>
+        /// <param name="name">Name of user</param>
+        /// <param name="email">Email of user</param>
+        /// <param name="Roles">List of user roles</param>
+        /// <returns>Access token</returns>
         public string GenerateAccessToken(Guid id, string name, string email, IEnumerable<string> Roles)
         {
             var claims = new List<Claim>
@@ -41,7 +51,11 @@ namespace IdentityService.BLL.Services
 
             return new JwtSecurityTokenHandler().WriteToken(accessToken);
         }
-
+        /// <summary>
+        /// Validationg existing access token
+        /// </summary>
+        /// <param name="accessToken">Access token of user</param>
+        /// <returns>List of claims</returns>
         public ClaimsPrincipal ValidateAccessToken(string accessToken)
         {
             var accessTokenHandler = new JwtSecurityTokenHandler();

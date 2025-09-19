@@ -1,9 +1,6 @@
 ﻿using CatalogService.Application.DTO.Brands;
-using CatalogService.Application.Features.Brands.Commands.Create;
-using CatalogService.Application.Features.Brands.Commands.Delete;
-using CatalogService.Application.Features.Brands.Commands.Update;
-using CatalogService.Application.Features.Brands.Queries.GetAll;
-using CatalogService.Application.Features.Brands.Queries.GetById;
+using CatalogService.Application.UseCases.Commands.Brands;
+using CatalogService.Application.UseCases.Queries.Brands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

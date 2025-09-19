@@ -1,8 +1,11 @@
 using CatalogService.API.Extentions;
 using CatalogService.API.Filters;
-using CatalogService.Application.Features.ProductAttributes.Comands.Create;
+using CatalogService.API.Handlers;
+using CatalogService.Application.Validatorss.ProductAttributeValues;
 using CatalogService.Infrastructure;
+using Ecommerce.Brokers;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -41,16 +44,28 @@ builder.Services.AddDbContext<CatalogServiceDbContext>(options =>
 
 
 services.AddRepositories();
+
 services.ConfigureServices();
 
 builder.ConfigureOptions();
 
 services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-services.AddValidatorsFromAssembly(typeof(CreateProductAttributeCommandValidator).Assembly);
+services.AddValidatorsFromAssembly(typeof(CreateProductAttributeValueValidator).Assembly);
 
 services.AddMediatR(m =>
-    m.RegisterServicesFromAssembly(typeof(CreateProductAttributeCommandValidator).Assembly));
+    m.RegisterServicesFromAssembly(typeof(CreateProductAttributeValueValidator).Assembly));
+
+services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "Custom";
+    options.DefaultChallengeScheme = "Custom";
+    options.DefaultForbidScheme = "Custom";
+})
+.AddScheme<AuthenticationSchemeOptions, AuthenticationHandler>("Custom", null);
+
+
+services.AddBrokers(configuration);
 
 var app = builder.Build();
 

@@ -12,11 +12,12 @@
     <PackageReference Include="FluentEmail.Core" Version="3.0.2" />
     <PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.5" />
+    <PackageReference Include="Grpc.Core" Version="2.46.6" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Ecommerce.Brokers\Ecommerce.Brokers.csproj" />
     <ProjectReference Include="..\IdentityService.DAL\IdentityService.DAL.csproj" />
   </ItemGroup>
 

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IdentityService.DAL.Entities;
+﻿using IdentityService.DAL.Entities;
 
 namespace IdentityService.BLL.DTO
 {
+    /// <summary>
+    /// Response object returned after authentication.
+    /// Contains access token and refresh token.
+    /// </summary>
     public class AuthResponse
     {
         public string AccessToken { get; set; }

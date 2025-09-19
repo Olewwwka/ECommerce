@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-namespace IdentityService.DAL.Entities
+﻿namespace IdentityService.DAL.Entities
 {
     public class RefreshToken
     {

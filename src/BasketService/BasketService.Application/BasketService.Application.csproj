@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Ecommerce.Brokers\Ecommerce.Brokers.csproj" />
     <ProjectReference Include="..\BasketService.Domain\BasketService.Domain.csproj" />
   </ItemGroup>
 

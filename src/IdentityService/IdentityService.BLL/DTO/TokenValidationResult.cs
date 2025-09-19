@@ -2,6 +2,9 @@
 
 namespace IdentityService.BLL.DTO
 {
+    /// <summary>
+    /// Result of validating of token.
+    /// </summary>
     public class TokenValidationResult
     {
         public bool IsValid { get; set; }

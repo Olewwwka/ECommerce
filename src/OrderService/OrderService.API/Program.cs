@@ -1,20 +1,23 @@
+using Ecommerce.Brokers;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.OpenApi.Models;
 using OrderService.API.Extensions;
+using OrderService.API.Extentions;
+using OrderService.API.Filters;
+using OrderService.API.Handlers;
 using OrderService.Application.Mappers;
 using OrderService.Application.UseCases.Commands;
 using OrderService.Application.Validators;
 using OrderService.Domain.Abstractions.Services;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using OrderService.API.Extentions;
-using OrderService.API.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
-var configurations = builder.Configuration;
+var configuration = builder.Configuration;
 
-builder.WebHost.UseUrls("http://localhost:7001");
+builder.WebHost.UseUrls("http://localhost:5004");
 
 builder.AddLogger();
 
@@ -49,6 +52,19 @@ services.AddServices();
 services.AddMediatR(m =>
     m.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly));
 
+services.AddBrokers(configuration);
+
+services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "Custom";
+    options.DefaultChallengeScheme = "Custom";
+    options.DefaultForbidScheme = "Custom";
+})
+.AddScheme<AuthenticationSchemeOptions, AuthenticationHandler>("Custom", null);
+
+services.AddAuthorization();
+
+
 var app = builder.Build();
 
 app.AddMiddlewares();
@@ -66,4 +82,4 @@ var initializer = app.Services.GetRequiredService<IDbInitializer>();
 await initializer.InitializeDbAsync();
 
 app.Run();
-
+public partial class Program { }

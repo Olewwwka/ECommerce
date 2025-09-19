@@ -7,5 +7,6 @@ namespace BasketService.Domain.Abstractions
         Task<Basket?> GetByUserIdAsync(Guid userId);
         Task<Basket> UpdateAsync(Basket basket);
         Task DeleteAsync(Guid userId);
+        Task<List<Basket>> GetAllBasketsAsync();
     }
 }

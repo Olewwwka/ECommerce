@@ -2,7 +2,6 @@
 using PaymentService.Application.Abstractions;
 using PaymentService.Application.DTO;
 using PaymentService.Domain.Abstractions;
-using PaymentService.Domain.Entities;
 using PaymentService.Domain.Exceptions;
 
 namespace PaymentService.Application.Services
@@ -43,7 +42,6 @@ namespace PaymentService.Application.Services
 
             return result;
         }
-
         public async Task<List<ReceiptDTO>> GetAll(int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
             var receipts = await _repository.GetPaginated(pageNumber, pageSize, cancellationToken);

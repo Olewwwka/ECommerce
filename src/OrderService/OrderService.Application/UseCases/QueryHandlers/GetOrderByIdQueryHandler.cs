@@ -7,6 +7,9 @@ using OrderService.Domain.Exceptions;
 
 namespace OrderService.Application.UseCases.QueryHandlers
 {
+    /// <summary>
+    /// Handler for GetOrderByIdQuery.
+    /// </summary>
     public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, OrderDto>
     {
         private readonly IMapper _mapper;
@@ -16,6 +19,13 @@ namespace OrderService.Application.UseCases.QueryHandlers
             _mapper = mapper;
             _orderRepository = orderReposotory;
         }
+        /// <summary>
+        /// Handles the GetOrderByIdQuery />.
+        /// </summary>
+        /// <param name="request">Query with order ID.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>/> Returns Order</returns>
+        /// <exception cref="NotFoundException">Throws if order with such ID does not exist.</exception>
         public async Task<OrderDto> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
         {
             var exisingOrder = await _orderRepository.GetByIdAsync(request.orderId);

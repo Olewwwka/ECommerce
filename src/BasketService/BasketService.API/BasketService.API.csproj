@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Ecommerce.Brokers\Ecommerce.Brokers.csproj" />
     <ProjectReference Include="..\BasketService.Application\BasketService.Application.csproj" />
     <ProjectReference Include="..\BasketService.Domain\BasketService.Domain.csproj" />
     <ProjectReference Include="..\BasketService.Infrastructure\BasketService.Infrastructure.csproj" />

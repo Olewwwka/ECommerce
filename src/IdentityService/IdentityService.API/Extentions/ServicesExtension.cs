@@ -1,7 +1,10 @@
 ﻿using IdentityService.BLL.Abstractions;
+using IdentityService.BLL.EventHandlers;
 using IdentityService.BLL.Services;
+using IdentityService.DAL.Abstractions.Handlers;
 using IdentityService.DAL.Abstractions.Services;
 using IdentityService.DAL.Data;
+using IdentityService.DAL.Services;
 
 namespace IdentityService.API.Extentions
 {
@@ -16,6 +19,18 @@ namespace IdentityService.API.Extentions
             services.AddScoped<IPasswordResetService, PasswordResetService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
+            services.AddScoped<IBallanceService, BallanceService>();
+            services.AddHttpClient<IHttpService, HttpService>();
+
+            services.AddScoped<IPutUpUserBallanceHandler, PutUpUserBallanceEventHandler>();
+            services.AddScoped<IPaymentFailedEventHandler, PaymentFailedEventHandler>();
+            services.AddScoped<IOrderComlitedEventHandler, OrderComlitedEventHandler>();
+            services.AddScoped<IOrderFailedEventHandler, OrderFailedEventHandler>();
+
+            services.AddHostedService<PutUpBallanceService>();
+            //services.AddHostedService<PaymentFailedService>();
+            services.AddHostedService<OrderComplitedEventService>();
+            services.AddHostedService<OrderFailedService>();
         }
     }
 }

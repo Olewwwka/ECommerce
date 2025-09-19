@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Ecommerce.Brokers\Ecommerce.Brokers.csproj" />
+  </ItemGroup>
+
 </Project>

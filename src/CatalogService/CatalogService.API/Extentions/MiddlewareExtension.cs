@@ -7,6 +7,8 @@ namespace CatalogService.API.Extentions
         public static void AddMiddlewares(this IApplicationBuilder app)
         {
             app.UseMiddleware<ExceptionMiddleware>();
+            app.UseAuthentication();
+            app.UseAuthorization();
         }
     }
 }

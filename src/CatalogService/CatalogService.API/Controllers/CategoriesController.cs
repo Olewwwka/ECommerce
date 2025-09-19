@@ -1,9 +1,6 @@
 ﻿using CatalogService.Application.DTO.Categories;
-using CatalogService.Application.Features.Categories.Commands.Create;
-using CatalogService.Application.Features.Categories.Commands.Delete;
-using CatalogService.Application.Features.Categories.Commands.Update;
-using CatalogService.Application.Features.Categories.Queries.GetAll;
-using CatalogService.Application.Features.Categories.Queries.GetById;
+using CatalogService.Application.UseCases.Commands.Categories;
+using CatalogService.Application.UseCases.Queries.Categories;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

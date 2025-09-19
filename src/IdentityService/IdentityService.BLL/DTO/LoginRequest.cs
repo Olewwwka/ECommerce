@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IdentityService.BLL.DTO
+﻿namespace IdentityService.BLL.DTO
 {
+    /// <summary>
+    /// Request object for user login.
+    /// </summary>
     public class LoginRequest
     {
         public string Email { get; set; }

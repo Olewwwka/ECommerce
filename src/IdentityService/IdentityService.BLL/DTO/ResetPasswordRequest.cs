@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IdentityService.BLL.DTO
+﻿namespace IdentityService.BLL.DTO
 {
+    /// <summary>
+    /// Request object for reset user password.
+    /// </summary>
     public class ResetPasswordRequest
     {
         public string Email { get; set; }

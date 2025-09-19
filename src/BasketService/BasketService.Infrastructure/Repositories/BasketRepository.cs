@@ -22,6 +22,26 @@ namespace BasketService.Infrastructure.Repositories
             await _redis.KeyDeleteAsync(userId.ToString());
         }
 
+        public async Task<List<Basket>> GetAllBasketsAsync()
+        {
+            var server = _redis.Multiplexer.GetServer(_redis.Multiplexer.GetEndPoints().FirstOrDefault()!);
+            var keys = server.Keys(pattern: "*").ToList();
+            var baskets = new List<Basket>();
+            foreach (var key in keys)
+            {
+                var basketData = await _redis.StringGetAsync(key);
+                if (!basketData.IsNullOrEmpty)
+                {
+                    var basket = JsonSerializer.Deserialize<Basket>(basketData);
+                    if (basket != null)
+                    {
+                        baskets.Add(basket);
+                    }
+                }
+            }
+            return baskets;
+        }
+
         public async Task<Basket?> GetByUserIdAsync(Guid userId)
         {
             var basket = await _redis

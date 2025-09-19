@@ -1,5 +1,8 @@
 ﻿namespace BasketService.Application.DTO
 {
+    /// <summary>
+    /// DTO for item in basket.
+    /// </summary>
     public class BasketItemDto
     {
         public Guid ProductId { get; set; }

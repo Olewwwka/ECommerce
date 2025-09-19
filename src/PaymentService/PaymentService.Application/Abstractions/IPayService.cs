@@ -7,5 +7,6 @@ namespace PaymentService.Application.Abstrations
     {
         Task<PaymentResponse> ProcessPaymentAsync(PaymentRequest request, CancellationToken cancellationToken);
         Task<PaymentStatus> GetPaymentStatusByOrderIdAsync(Guid orderId, CancellationToken cancellationToken);
+        Task<ReceiptDTO> PutUpUserBallance(PutUpUserBallanceDTO request, CancellationToken cancellationToken);
     }
 }

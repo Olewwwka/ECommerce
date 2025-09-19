@@ -10,7 +10,8 @@
         public Category Category { get; set; }
         public Guid BrandId { get; set; }
         public Brand Brand { get; set; }
-        public bool IsAvaliable { get; set; }
+        public int Quantity { get; set; } 
+        public bool IsAvaliable => Quantity > 0;
         public List<ProductImage> Images { get; set; } = new();
         public List<ProductAttributeValue> AttributeValues { get; set; } = new();
         public Product()

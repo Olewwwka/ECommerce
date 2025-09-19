@@ -3,11 +3,14 @@ using BasketService.Application.DTO;
 using BasketService.Application.UseCases.Queries.Baskets;
 using BasketService.Domain.Abstractions;
 using BasketService.Domain.Entities;
-using BasketService.Domain.Exceptions;
 using MediatR;
 
 namespace BasketService.Application.UseCases.QueryHandlers
 {
+    /// <summary>
+    /// Handle recieved GetBasketByUserIdQuery.
+    /// Creates a new basket if not exists.
+    /// </summary>
     public class GetBasketByUserIdQueryHandler : IRequestHandler<GetBasketByUserIdQuery, BasketDto>
     {
         private readonly IBasketRepository _basketRepository;
@@ -17,6 +20,12 @@ namespace BasketService.Application.UseCases.QueryHandlers
             _basketRepository = basketRepository;
             _mapper = mapper;
         }
+        /// <summary>
+        /// Return a user's basket or create a new if it not exist.
+        /// </summary>
+        /// <param name="request">User ID.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Basket of user.</returns>
         public async Task<BasketDto> Handle(GetBasketByUserIdQuery request, CancellationToken cancellationToken)
         {
             var existingBasket = await _basketRepository.GetByUserIdAsync(request.userId);

@@ -67,6 +67,9 @@ namespace IdentityService.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<decimal>("Ballance")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");

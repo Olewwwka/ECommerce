@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PaymentService.Application.Abstractions;
 
 namespace PaymentService.API.Controllers
@@ -28,7 +29,9 @@ namespace PaymentService.API.Controllers
 
             return Ok(result);
         }
+
         [HttpGet]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> GetAll(int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
             var result = await _receiptService.GetAll(pageNumber, pageSize, cancellationToken);

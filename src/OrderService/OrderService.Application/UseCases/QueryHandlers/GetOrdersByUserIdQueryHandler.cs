@@ -6,6 +6,9 @@ using OrderService.Domain.Abstractions;
 
 namespace OrderService.Application.UseCases.QueryHandlers
 {
+    /// <summary>
+    /// Handler for GetOrdersByUserIdQuery.
+    /// </summary>
     public class GetOrdersByUserIdQueryHandler : IRequestHandler<GetOrdersByUserIdQuery, List<OrderDto>>
     {
         private readonly IMapper _mapper;
@@ -15,6 +18,12 @@ namespace OrderService.Application.UseCases.QueryHandlers
             _mapper = mapper;
             _orderRepository = orderReposotory;
         }
+        /// <summary>
+        /// Handles the GetOrdersByUserIdQuery/>.
+        /// </summary>
+        /// <param name="request">Query with user ID.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>A list of OrderDto.</returns>
         public async Task<List<OrderDto>> Handle(GetOrdersByUserIdQuery request, CancellationToken cancellationToken)
         {
             var exisingOrders = await _orderRepository.GetByUserId(request.userId);

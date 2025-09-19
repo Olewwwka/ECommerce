@@ -28,5 +28,15 @@ namespace PaymentService.API.Controllers
             var result = await _paymentService.GetPaymentStatusByOrderIdAsync(orderId, cancellationToken);
             return Ok(result);
         }
+
+        [HttpPost("ballance/{userId:guid}")]
+        public async Task<IActionResult> PutUpBallanceAsync(Guid userId, decimal amount, CancellationToken cancellationToken)
+        {
+            var request = new PutUpUserBallanceDTO() { UserId = userId, Amount = amount};
+
+            var result = await _paymentService.PutUpUserBallance(request, cancellationToken);
+
+            return Ok(result);
+        }
     }
 }

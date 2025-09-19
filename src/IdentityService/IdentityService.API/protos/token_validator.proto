@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "IdentityService.Grpc";
+
+service TokenValidator {
+	rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}
+
+message ValidateTokenRequest{
+	string accessToken = 1;
+}
+
+message Claim {
+	string type = 1;
+	string value = 2;
+}
+
+message ValidateTokenResponse{
+	bool isValid = 1;
+	repeated Claim Claims = 2;
+}

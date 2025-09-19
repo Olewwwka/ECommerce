@@ -7,5 +7,6 @@
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public ICollection<UserRoleEntity> UserRoles { get; set; } = new List<UserRoleEntity>();
+        public decimal Ballance { get; set; }
     }
 }

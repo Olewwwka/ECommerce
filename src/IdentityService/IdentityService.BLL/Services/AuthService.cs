@@ -8,6 +8,10 @@ using IdentityService.DAL.Entities;
 
 namespace IdentityService.BLL.Services
 {
+    /// <summary>
+    /// Service that contains logic of authorization
+    /// Contains such methods as login user, register user and refresh access token of user
+    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly IUsersRepository _usersRepository;
@@ -31,7 +35,14 @@ namespace IdentityService.BLL.Services
             _refreshTokenService = refreshTokenService;
             _rolesRepository = rolesRepository;
         }
-
+        /// <summary>
+        /// Logging user in system
+        /// </summary>
+        /// <param name="request">Request that contains email and password of user</param>
+        /// <param name="cancellationToken">A token that allows you to cancel an asynchronous operation</param>
+        /// <returns>AuthResponse, that contains information about user and pair of access and refresh tokens</returns>
+        /// <exception cref="UserNotFoundException">If user not found in database</exception>
+        /// <exception cref="IncorrectPasswordException">If user sent incorrect password</exception>
         public async Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
         {
             var existingUser = await _usersRepository.GetUserByEmailAsync(request.Email, cancellationToken);
@@ -58,7 +69,13 @@ namespace IdentityService.BLL.Services
 
             return new AuthResponse() { AccessToken = accessToken, RefreshToken = refreshToken };
         }
-
+        /// <summary>
+        /// Register user in sustem
+        /// </summary>
+        /// <param name="request">Request that contains name, email and password of user</param>
+        /// <param name="cancellationToken">A token that allows you to cancel an asynchronous operation</param>
+        /// <returns>AuthResponse, that contains information about user and pair of access and refresh tokens</returns>
+        /// <exception cref="UserAlreadyExistsException">If user already exists in database</exception>
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
         {
             var existingUser = await _usersRepository.GetUserByEmailAsync(request.Email, cancellationToken);
@@ -94,7 +111,16 @@ namespace IdentityService.BLL.Services
 
             return new AuthResponse() { AccessToken = accessToken, RefreshToken = refreshToken };
         }
-
+        /// <summary>
+        /// Refresh access token of user
+        /// </summary>
+        /// <param name="accessToken">Access token, received as a result of authorization</param>
+        /// <param name="refreshToken">Refresh token, received as a result of authorization</param>
+        /// <param name="cancellationToken">A token that allows you to cancel an asynchronous operation</param>
+        /// <returns>AuthResponse, that contains information about user and pair of access and refresh tokens</returns>
+        /// <exception cref="RefreshTokenNotFoundException">If refresh token not found in database</exception>
+        /// <exception cref="RefreshTokenExpiredException">If refresh token expired</exception>
+        /// <exception cref="UserNotFoundException">If user not found in database</exception>
         public async Task<AuthResponse> RefreshAsync(string accessToken, string refreshToken, CancellationToken cancellationToken)
         {
             var existingRefreshToken = await _refreshTokenService.GetRefreshTokenAsync(refreshToken);
